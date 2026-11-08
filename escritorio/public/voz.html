@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jarvis — Configurar Voz</title>
+<style>
+  :root { --fundo: #0a0404; --vidro: rgba(26, 11, 9, .84); --texto: #f7ede7; --suave: #b39488; --borda: rgba(255, 110, 60, .2);
+    --laranja: #ff6a2b; --verde: #3ef08a; --mono: ui-monospace, "SF Mono", Menlo, monospace; }
+  * { box-sizing: border-box; }
+  html { background: var(--fundo); }
+  body { margin: 0; min-height: 100vh; color: var(--texto); font: 15px/1.55 system-ui, sans-serif;
+    background: radial-gradient(800px 400px at 50% 10%, #3a0d05 0%, transparent 70%), var(--fundo);
+    display: grid; place-items: center; padding: 24px 16px; }
+  .card { max-width: 520px; width: 100%; padding: 32px; background: var(--vidro); border: 1px solid var(--borda);
+    border-radius: 20px; backdrop-filter: blur(12px); box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+  h1 { font: 800 20px var(--mono); color: #fff3ec; margin: 0 0 6px; letter-spacing: .04em; }
+  p { color: var(--suave); font-size: 14px; margin: 0 0 20px; line-height: 1.5; }
+  a { color: var(--laranja); }
+  label { display: block; font: 600 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--suave); margin-bottom: 6px; }
+  select, input { width: 100%; font: inherit; font-size: 14px; color: var(--texto); background: rgba(10,4,3,.6);
+    border: 1px solid var(--borda); border-radius: 10px; padding: 10px 12px; margin-bottom: 16px; }
+  select:focus, input:focus { outline: none; border-color: rgba(255,128,80,.6); }
+  select { appearance: none; cursor: pointer; }
+  .row { display: flex; gap: 10px; align-items: center; }
+  button { font: inherit; font-size: 14px; font-weight: 650; border-radius: 10px; padding: 10px 20px; cursor: pointer;
+    background: var(--laranja); border: 1px solid var(--laranja); color: #fff; }
+  button:hover { filter: brightness(1.1); }
+  button:disabled { opacity: .45; cursor: default; }
+  .teste { background: none; border-color: var(--borda); color: var(--suave); }
+  .teste:hover { border-color: rgba(255,128,80,.5); color: var(--texto); }
+  .msg { margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-size: 13px; }
+  .msg.ok { background: rgba(62,240,138,.12); border: 1px solid rgba(62,240,138,.4); color: #b9ffd6; }
+  .msg.erro { background: rgba(255,100,100,.12); border: 1px solid rgba(255,100,100,.4); color: #ffb3b3; }
+  .steps { margin: 20px 0 0; padding: 0; list-style: none; counter-reset: s; }
+  .steps li { counter-increment: s; padding: 8px 0; border-bottom: 1px solid rgba(255,110,60,.1); font-size: 13.5px; color: var(--suave); }
+  .steps li::before { content: counter(s) "."; font: 700 13px var(--mono); color: var(--laranja); margin-right: 8px; }
+  .steps li:last-child { border: 0; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Configurar Voz do Jarvis</h1>
+  <p>O Jarvis pode falar com a sua voz usando o <a href="https://fish.audio" target="_blank">Fish Audio</a> (grátis)
+    ou o <a href="https://elevenlabs.io" target="_blank">ElevenLabs</a> (pago). Sem chave, ele usa a voz do navegador.</p>
+
+  <label>Provedor</label>
+  <select id="provedor">
+    <option value="fish">Fish Audio (grátis)</option>
+    <option value="elevenlabs">ElevenLabs</option>
+    <option value="">Sem voz externa (usa o navegador)</option>
+  </select>
+
+  <label>Chave da API</label>
+  <input id="chave" type="password" placeholder="Cole aqui a chave da API">
+
+  <label>ID da Voz (opcional)</label>
+  <input id="vozId" placeholder="ID de uma voz clonada (deixe vazio para a padrão)">
+
+  <div class="row">
+    <button id="salvar">Salvar</button>
+    <button class="teste" id="testar">Testar voz</button>
+  </div>
+
+  <div id="msg"></div>
+
+  <ol class="steps">
+    <li>Crie uma conta grátis em <a href="https://fish.audio" target="_blank">fish.audio</a></li>
+    <li>Vá em <b>API Keys</b> e crie uma chave</li>
+    <li>Cole a chave aqui e clique em <b>Salvar</b></li>
+    <li>Para usar uma voz clonada, crie no Fish Audio e cole o ID acima</li>
+  </ol>
+</div>
+
+<script>
+const msgEl = document.getElementById('msg');
+const show = (txt, ok) => { msgEl.className = 'msg ' + (ok ? 'ok' : 'erro'); msgEl.textContent = txt; };
+
+async function carregarConfig() {
+  try {
+    const r = await fetch('/api/estado');
+    const d = await r.json();
+    const cfg = d.config || {};
+    document.getElementById('provedor').value = cfg.vozProvedor || 'fish';
+    document.getElementById('vozId').value = cfg.vozId || '';
+  } catch {}
+}
+carregarConfig();
+
+document.getElementById('salvar').addEventListener('click', async () => {
+  const provedor = document.getElementById('provedor').value;
+  const chave = document.getElementById('chave').value.trim();
+  const vozId = document.getElementById('vozId').value.trim();
+
+  try {
+    const r = await fetch('/api/voz/config', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ provedor, chave, vozId })
+    });
+    const j = await r.json();
+    if (r.ok) show('Configuração salva!', true);
+    else show(j.erro || 'Erro ao salvar', false);
+  } catch (e) {
+    show('Erro de conexão: ' + e.message, false);
+  }
+});
+
+document.getElementById('testar').addEventListener('click', async () => {
+  try {
+    const r = await fetch('/api/voz', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ texto: 'Olá! Eu sou o Jarvis, seu assistente.' })
+    });
+    if (!r.ok) { const j = await r.json(); show(j.erro || 'Erro na voz', false); return; }
+    const j = await r.json();
+    const audio = new Audio('data:audio/mpeg;base64,' + j.audio);
+    audio.play();
+    show('Voz funcionando!', true);
+  } catch (e) {
+    show('Erro: ' + e.message, false);
+  }
+});
+</script>
+</body>
+</html>

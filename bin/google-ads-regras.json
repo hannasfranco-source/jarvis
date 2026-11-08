@@ -1,0 +1,23 @@
+{
+  "_nota": "Regras da ferramenta google-ads. Os segredos ficam em .google-ads.env, nunca aqui. Ajuste os valores para sua operação.",
+  "orcamento_diario_padrao_brl": 100,
+  "orcamento_diario_teto_brl": 500,
+  "cpa_alvo_padrao_brl": 200,
+  "campanha_nasce_pausada": true,
+  "recomendacoes_do_google": "ignorar sempre",
+  "excluir_recursos": false,
+  "meta_conversao_padrao": "",
+  "max_campanhas_por_conta": 10,
+  "contas_reservadas_lancamentos": [],
+  "lancamentos": {
+    "lance": "MAXIMIZAR CLIQUES (TARGET_SPEND)",
+    "cpc_maximo_brl": 12,
+    "orcamento_diario_padrao_brl": 100,
+    "orcamento_diario_teto_brl": 500,
+    "geo_tipo": "PRESENCE_OR_INTEREST",
+    "redes_parceiras": true,
+    "idioma": "1000",
+    "locais_excluidos": ["2076"],
+    "titulos_fixados_na_posicao_1": 7
+  }
+}

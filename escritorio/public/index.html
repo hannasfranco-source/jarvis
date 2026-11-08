@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jarvis — Gringa Ads</title>
+<style>
+  :root {
+    --fundo: #0a0404; --vidro: rgba(26, 11, 9, .84); --texto: #f7ede7; --suave: #b39488; --borda: rgba(255, 110, 60, .2);
+    --laranja: #ff6a2b; --verde: #3ef08a; --ambar: #ffb020; --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { background: var(--fundo); }
+  body { margin: 0; min-height: 100vh; color: var(--texto); font: 15px/1.45 system-ui, -apple-system, sans-serif;
+    background: radial-gradient(1400px 700px at 60% 10%, #3a0d05 0%, transparent 70%), var(--fundo); }
+
+  .barra { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 20px; margin-bottom: 14px;
+    border-bottom: 1px solid var(--borda); background: rgba(14, 6, 5, .7); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 5; }
+  .marca { display: inline-flex; align-items: center; gap: 10px; font-weight: 750; font-size: 15px; margin-right: 6px; color: #fff3ec; }
+  .logo { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 800 14px var(--mono); color: #fff;
+    border: 1.5px solid rgba(255, 170, 130, .9); box-shadow: 0 0 14px rgba(255, 100, 50, .6), inset 0 0 10px rgba(255, 100, 50, .5); }
+  .pill { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 13px; border-radius: 99px; font-size: 13px; font-weight: 650;
+    background: var(--vidro); border: 1.5px solid var(--borda); white-space: nowrap; }
+  .pill b { font-variant-numeric: tabular-nums; }
+  .pill .led { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--suave)); box-shadow: 0 0 8px var(--c, transparent); }
+  .pill.alerta { border-color: var(--laranja); color: #ffd2b3; background: rgba(255, 138, 61, .14); animation: pulsar 1.6s ease-in-out infinite; }
+  .pill.plano { border-style: dashed; border-color: rgba(255, 176, 32, .6); color: #ffd98a; background: rgba(255, 176, 32, .08); }
+  .pill.jarvis { cursor: pointer; font: 800 11.5px var(--mono); letter-spacing: .14em; color: var(--suave); }
+  .pill.jarvis .led { --c: #7d6a63; }
+  .pill.jarvis.ligado { color: #ffd2b8; border-color: rgba(255, 106, 43, .65); background: rgba(255, 106, 43, .13); }
+  .pill.jarvis.ligado .led { --c: #ff6a2b; animation: pulsar-pt 1.6s ease-in-out infinite; }
+  #conexao { --c: #e0505a; margin-left: auto; }
+  #conexao.on { --c: var(--verde); border-color: rgba(62, 240, 138, .45); color: #b9ffd6; }
+  @keyframes pulsar { 50% { box-shadow: 0 0 0 4px rgba(255, 138, 61, .15); } }
+  @keyframes pulsar-pt { 50% { box-shadow: 0 0 0 5px rgba(255, 138, 61, .25); } }
+
+  .palco { position: relative; margin: 0 20px; border-radius: 22px; border: 1px solid var(--borda); overflow: hidden;
+    background: radial-gradient(60% 70% at 50% 50%, #2c0b04 0%, #130605 55%, #0a0303 100%); box-shadow: 0 30px 80px rgba(0, 0, 0, .55); }
+  .orbita { position: relative; width: 100%; height: clamp(460px, calc(100vh - 150px), 700px); }
+  .linhas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .linhas path { fill: none; vector-effect: non-scaling-stroke; }
+  .linhas .base { stroke: rgba(255, 106, 43, .22); stroke-width: 1.2; transition: stroke .4s; }
+  .linhas .base[data-estado="offline"] { stroke: rgba(255, 106, 43, .13); stroke-dasharray: 3 5; }
+  .linhas .base[data-estado="trabalhando"] { stroke: rgba(255, 128, 64, .75); stroke-width: 1.7; filter: drop-shadow(0 0 3px #ff5a1f); }
+  .linhas .base[data-estado="esperando"] { stroke: rgba(255, 176, 32, .85); stroke-width: 1.7; animation: piscar 1.2s ease-in-out infinite; }
+  .linhas .cometa { stroke: #ffd9c4; stroke-width: 2.8; stroke-linecap: round; stroke-dasharray: 5 95; opacity: 0;
+    animation: correr 1.9s linear infinite; filter: drop-shadow(0 0 4px #ff6a2b); }
+  .linhas .cometa[data-estado="trabalhando"] { opacity: 1; }
+  .linhas .cometa[data-estado="parado"] { opacity: .3; animation-duration: 6s; }
+  @keyframes correr { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+  @keyframes piscar { 50% { opacity: .35; } }
+
+  .sol { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(30%, 44vh); aspect-ratio: 1; padding: 0; border: 0;
+    border-radius: 50%; background: none; color: inherit; font: inherit; cursor: pointer; isolation: isolate; }
+  .sol::before { content: ""; position: absolute; inset: -30%; border-radius: 50%; z-index: -2; pointer-events: none;
+    background: radial-gradient(circle, rgba(255, 110, 30, .3) 0%, rgba(255, 80, 20, .1) 38%, transparent 64%); animation: respirar 3.2s ease-in-out infinite; }
+  .varredura { position: absolute; inset: -14%; border-radius: 50%; z-index: -1; pointer-events: none; animation: girar 7s linear infinite;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 130, 60, .05) 8deg, rgba(255, 140, 70, .38) 34deg, transparent 35deg);
+    -webkit-mask: radial-gradient(circle, transparent 34%, #000 36%, #000 70%, transparent 71%); mask: radial-gradient(circle, transparent 34%, #000 36%, #000 70%, transparent 71%); }
+  .reator { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 6px rgba(255, 106, 43, .55)); }
+  .reator .g { transform-origin: 100px 100px; }
+  .reator .gira-1 { animation: girar 60s linear infinite reverse; }
+  .reator .gira-2 { animation: girar 24s linear infinite; }
+  .reator .gira-3 { animation: girar 5s linear infinite; }
+  .reator .gira-4 { animation: girar 90s linear infinite; }
+  .reator circle, .reator polygon { fill: none; }
+  .reator .raios line { stroke: #ffb27a; stroke-width: 1.3; stroke-linecap: round; }
+  .reator .miolo { fill: url(#gradMiolo); transform-origin: 100px 100px; animation: pulsoReator 2.6s ease-in-out infinite; }
+  .reator .nome { font: 700 9px var(--mono); letter-spacing: 1px; fill: #fff1e8; text-anchor: middle; }
+  .reator .sub { font: 600 4.6px var(--mono); letter-spacing: 1.4px; fill: #ff9a5c; text-anchor: middle; }
+  @keyframes pulsoReator { 0%, 100% { opacity: .82; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+  .sol.escutando .gira-3 { animation-duration: 1.6s; }
+  .sol.escutando .miolo, .sol.falando .miolo { animation-duration: .7s; }
+  .sol.escutando .varredura, .sol.falando .varredura { animation-duration: 2.4s; }
+  .sol:hover .reator { filter: drop-shadow(0 0 10px rgba(255, 140, 70, .8)); }
+  .sol-status { position: absolute; bottom: 106%; left: 50%; transform: translateX(-50%); font: 800 12px var(--mono); letter-spacing: .38em;
+    margin-right: -.38em; color: #ffb27a; text-shadow: 0 0 10px rgba(255, 90, 31, .9); white-space: nowrap; pointer-events: none; }
+  .sol-legenda { position: absolute; top: 104%; left: 50%; transform: translateX(-50%); width: max(150%, 300px); text-align: center; pointer-events: none;
+    font: 500 12.5px var(--mono); line-height: 1.45; color: #ffd9c4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .sol-legenda.calma { color: var(--suave); font-family: system-ui, sans-serif; font-size: 12px; }
+  .onda { position: absolute; top: calc(104% + 42px); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 3px; height: 26px; pointer-events: none; }
+  .onda i { width: 3px; height: 15%; border-radius: 2px; background: #ff8a4c; opacity: .65; animation: onda 1.8s ease-in-out infinite; animation-delay: calc(var(--k) * -.11s); }
+  @keyframes onda { 0%, 100% { height: 15%; } 50% { height: var(--h); } }
+  .sol.falando .onda i, .sol.escutando .onda i { animation-duration: .42s; opacity: 1; background: #ffd2b8; }
+
+  .hud { position: absolute; top: 20px; display: grid; gap: 2px; pointer-events: none; }
+  .hud b { font: 700 30px var(--mono); color: #fff1e8; text-shadow: 0 0 14px rgba(255, 90, 31, .7); letter-spacing: .04em; }
+  .hud small { font: 600 10.5px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--suave); }
+  .hud-hora { left: 24px; }
+  .hud-clima { right: 24px; text-align: right; }
+
+  .ag { position: absolute; transform: translate(-50%, -50%); width: 210px; display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px;
+    text-align: left; font: inherit; color: var(--texto); cursor: pointer; background: rgba(24, 9, 7, .9); border: 1px solid rgba(255, 106, 43, .28);
+    border-radius: 14px; backdrop-filter: blur(6px); box-shadow: 0 10px 30px rgba(0, 0, 0, .4); transition: border-color .2s, box-shadow .2s; }
+  .ag:hover { border-color: #ff8a4c; box-shadow: 0 0 0 1px #ff8a4c, 0 0 26px rgba(255, 106, 43, .45); }
+  .ag-icone { position: relative; flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #ffcfb4;
+    border: 1.5px solid rgba(255, 138, 76, .5); background: radial-gradient(circle, rgba(255, 106, 43, .2), rgba(255, 106, 43, .04));
+    box-shadow: inset 0 0 10px rgba(255, 106, 43, .25); }
+  .ag-icone svg { width: 19px; height: 19px; }
+  .ag-icone::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px solid transparent; }
+  .ag-icone i { position: absolute; right: -2px; bottom: -2px; width: 11px; height: 11px; border-radius: 50%; background: var(--e); border: 2px solid #180806;
+    box-shadow: 0 0 8px var(--e); }
+  .ag-txt { min-width: 0; display: grid; }
+  .ag-txt em { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: 700 9.5px var(--mono); letter-spacing: .14em; text-transform: uppercase;
+    font-style: normal; color: var(--s); }
+  .ag-txt b { font-size: 14px; font-weight: 700; line-height: 1.25; }
+  .ag-txt small { font-size: 11.5px; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  [data-estado="trabalhando"] { --e: var(--verde); }
+  [data-estado="esperando"] { --e: var(--laranja); }
+  [data-estado="parado"] { --e: #a8968e; }
+  [data-estado="offline"] { --e: #7d6a63; }
+  .ag[data-estado="trabalhando"] { border-color: rgba(255, 138, 76, .75); box-shadow: 0 0 22px rgba(255, 90, 31, .35); }
+  .ag[data-estado="trabalhando"] .ag-icone { color: #fff1e8; border-color: #ff8a4c; box-shadow: 0 0 14px rgba(255, 106, 43, .7), inset 0 0 10px rgba(255, 106, 43, .4); }
+  .ag[data-estado="trabalhando"] .ag-icone::after { border-top-color: #ff8a4c; border-right-color: rgba(255, 138, 76, .3); animation: girar 1.4s linear infinite; }
+  .ag[data-estado="trabalhando"] small { color: #ffd2b8; }
+  .ag[data-estado="esperando"] { border-color: var(--ambar); animation: pulsar 1.6s ease-in-out infinite; }
+  .ag[data-estado="offline"] .ag-icone { color: #b39488; border-color: rgba(255, 138, 76, .25); background: none; box-shadow: none; }
+
+  .gaveta { position: fixed; top: 0; right: 0; bottom: 0; width: min(400px, 100vw); z-index: 20; overflow: auto; display: grid; align-content: start; gap: 12px;
+    padding: 16px; background: rgba(14, 6, 5, .97); border-left: 1px solid var(--borda);
+    box-shadow: -30px 0 60px rgba(0, 0, 0, .5); backdrop-filter: blur(12px); animation: entrar .2s ease-out; }
+  @keyframes entrar { from { transform: translateX(30px); opacity: 0; } }
+  .gaveta .cartao { padding: 16px; background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; }
+  .fechar { margin-left: auto; width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--borda); background: none;
+    color: var(--suave); font-size: 16px; cursor: pointer; }
+  .fechar:hover { color: var(--texto); border-color: rgba(255, 112, 60, .5); }
+  .det-topo { display: flex; gap: 12px; align-items: center; }
+  .det-topo .ag-icone { width: 52px; height: 52px; }
+  .det-topo .ag-icone svg { width: 24px; height: 24px; }
+  .det-sol { flex: none; width: 52px; height: 52px; border-radius: 50%; animation: pulsoReator 2.6s ease-in-out infinite;
+    background: radial-gradient(circle at 42% 38%, #fff7da 0%, #ffd682 16%, #ffa63a 40%, #ff6c14 66%, #d43a00 100%); }
+  .det-projeto { font-weight: 700; font-size: 17px; }
+  .det-titulo { color: var(--suave); font-size: 13px; }
+  .det-estado { margin: 14px 0 4px; padding: 9px 12px; border-radius: 10px; font-weight: 650; overflow-wrap: anywhere;
+    color: var(--e); background: color-mix(in srgb, var(--e) 12%, transparent); border: 1px solid color-mix(in srgb, var(--e) 35%, transparent); }
+  #caixa textarea { width: 100%; box-sizing: border-box; min-height: 76px; resize: vertical; font: inherit; font-size: 14px; color: var(--texto);
+    background: rgba(10, 4, 3, .6); border: 1px solid var(--borda); border-radius: 10px; padding: 9px 11px; }
+  #caixa textarea:focus { outline: none; border-color: rgba(255, 128, 80, .6); }
+  #caixa .linha { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
+  #caixa .dica { color: var(--suave); font-size: 12.5px; }
+  #caixa .dica.erro { color: #ff9aa4; }
+  #caixa button { font: inherit; font-size: 13px; font-weight: 650; border-radius: 8px; padding: 7px 16px; cursor: pointer; flex: none;
+    background: var(--laranja); border: 1px solid var(--laranja); color: #fff; }
+  #caixa button:disabled { opacity: .45; cursor: default; }
+  h2 { font: 700 11px var(--mono); text-transform: uppercase; letter-spacing: .14em; color: var(--suave); margin: 0 0 12px; }
+  dl { margin: 10px 0 0; }
+  dt { font: 600 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--suave); margin-top: 12px; }
+  dd { margin: 3px 0 0; overflow-wrap: anywhere; }
+  code { font: 12px var(--mono); background: rgba(255, 128, 80, .12); padding: 1px 5px; border-radius: 4px; }
+  .ouvindo { position: fixed; left: 50%; top: 72px; transform: translateX(-50%); z-index: 30; width: max-content; max-width: min(640px, calc(100vw - 32px));
+    padding: 12px 20px; border-radius: 14px; background: rgba(20, 8, 6, .97); border: 1px solid rgba(255, 106, 43, .75);
+    box-shadow: 0 0 34px rgba(255, 90, 31, .35), 0 20px 50px rgba(0, 0, 0, .5); font-size: 15px; }
+  .ouvindo b { display: block; margin-bottom: 4px; font: 800 11px var(--mono); letter-spacing: .32em; color: #ff8a4c; }
+  .ouvindo small { display: block; margin-top: 4px; color: var(--suave); font-size: 12px; }
+  .rodape { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-top: 1px solid var(--borda); background: rgba(14, 6, 5, .92); }
+  .legenda { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--suave); padding: 0 8px; }
+  .legenda span { display: flex; align-items: center; gap: 7px; }
+  .legenda i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 6px var(--c); }
+
+  @keyframes girar { to { transform: rotate(360deg); } }
+  @keyframes respirar { 50% { transform: scale(1.08); opacity: .75; } }
+  @media (max-width: 860px) {
+    .palco { margin: 0 16px; }
+    .orbita { height: auto; display: grid; gap: 8px; padding: 24px 14px 16px; }
+    .linhas, .hud { display: none; }
+    .sol { position: relative; left: auto; top: auto; transform: none; width: 200px; justify-self: center; margin: 44px 0 100px; }
+    .ag { position: static; transform: none; width: auto; }
+    .barra { position: static; padding: 10px 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .sol::before, .linhas .cometa, .ag { animation: none !important; } }
+</style>
+</head>
+<body>
+<header class="barra">
+  <span class="marca"><span class="logo">J</span><span id="marca-nome">Jarvis</span></span>
+  <span class="pill" id="p-trab" style="--c: var(--verde)"><span class="led"></span><b>0</b> trabalhando</span>
+  <span class="pill alerta" id="p-esp" hidden></span>
+  <span class="pill plano" id="p-uso">Uso do plano: aguardando</span>
+  <button class="pill jarvis" id="jarvis" type="button"><span class="led"></span><span>JARVIS · DESLIGADO</span></button>
+  <span class="pill" id="conexao"><span class="led"></span><span>conectando</span></span>
+</header>
+<section class="palco">
+  <div class="orbita" id="orbita">
+    <svg class="linhas" id="linhas" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true"></svg>
+    <div class="hud hud-hora"><b id="hud-hora"></b><small id="hud-data"></small></div>
+    <div class="hud hud-clima"><b id="hud-temp"></b><small id="hud-ceu"></small></div>
+  </div>
+  <div class="rodape">
+    <div class="legenda">
+      <span><i style="--c: var(--verde)"></i> trabalhando</span>
+      <span><i style="--c: var(--laranja)"></i> precisa de você</span>
+      <span><i style="--c: #a8968e"></i> parado</span>
+      <span><i style="--c: #7d6a63"></i> de plantão</span>
+    </div>
+  </div>
+</section>
+<aside class="gaveta" id="gaveta" hidden>
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <h2 id="gaveta-titulo"></h2>
+    <button class="fechar" id="fechar">✕</button>
+  </div>
+  <div class="cartao" id="detalhe"></div>
+  <div class="cartao" id="caixa" hidden>
+    <h2>Mandar mensagem</h2>
+    <textarea id="texto" placeholder="Escreva como se fosse no terminal do agente…"></textarea>
+    <div class="linha"><span class="dica" id="dica"></span><button id="enviar">Enviar</button></div>
+  </div>
+</aside>
+<div class="ouvindo" id="ouvindo" role="status" hidden></div>
+
+<script>
+const COR_ESTADO = { trabalhando: '#3ef08a', esperando: '#ff8a3d', parado: '#a8968e', offline: '#7d6a63' };
+const CENTRO = [500, 300];
+const LUGAR = { nutra: [200, 300], lancamentos: [800, 300] };
+const ICONE = {
+  nutra: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>',
+  lancamentos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19h16M7 15v-4M12 15V6M17 15V9"/></svg>',
+  jarvis: '',
+};
+const COR_AGENTE = { nutra: '#5fd36a', lancamentos: '#ffb020', jarvis: '#ff6a2b' };
+const ROTULO_AGENTE = { nutra: 'Nutra', lancamentos: 'Lançamentos', jarvis: 'Central' };
+const ACOES = { Read: 'lendo', Edit: 'editando', Write: 'escrevendo', Bash: 'rodando', Grep: 'procurando', WebFetch: 'lendo na web', WebSearch: 'pesquisando', Agent: 'chamou um ajudante', Skill: 'usando uma skill' };
+
+let equipe = [], mensagens = [], uso = null, selecionado = null, nomeUsuario = 'Aluno';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+const encurtar = (s, m) => { s = String(s ?? ''); return s.length > m ? s.slice(0, m - 1) + '…' : s; };
+
+function textoFerramenta(f) { const a = ACOES[f.nome] || `usando ${f.nome}`; return f.detalhe ? `${a}: ${f.detalhe}` : a; }
+function linhaCurta(m) {
+  const s = m.sessao;
+  if (m.estado === 'offline') return 'de plantão · abra no Claude Code';
+  if (m.estado === 'esperando') return s.espera || 'responder no terminal';
+  if (m.estado === 'trabalhando') return s.ferramenta ? textoFerramenta(s.ferramenta) : 'pensando…';
+  return s.titulo || 'esperando um novo pedido';
+}
+
+// ---------- Reator do Jarvis (SVG do sol central) ----------
+const octogono = r => Array.from({length: 8}, (_, i) => { const a = (i * 45 + 22.5) * Math.PI / 180; return `${(100 + r * Math.cos(a)).toFixed(1)},${(100 + r * Math.sin(a)).toFixed(1)}`; }).join(' ');
+const REATOR = `<span class="varredura"></span>
+  <svg class="reator" viewBox="0 0 200 200" aria-hidden="true">
+    <defs><radialGradient id="gradMiolo"><stop offset="0" stop-color="#1c0703"/><stop offset=".62" stop-color="#3a1004"/><stop offset=".9" stop-color="#b23c0a"/><stop offset="1" stop-color="#ff8a4c"/></radialGradient></defs>
+    <g class="g gira-4"><circle cx="100" cy="100" r="98" stroke="rgba(255,160,90,.5)" stroke-width="2.4" stroke-dasharray=".8 4.3"/></g>
+    <g class="g gira-1"><polygon points="${octogono(92)}" stroke="rgba(255,150,90,.45)" stroke-width=".8"/></g>
+    <g class="g gira-3"><circle cx="100" cy="100" r="84" stroke="#ffc39b" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="70 458"/></g>
+    <circle cx="100" cy="100" r="78" stroke="rgba(255,138,76,.55)" stroke-width="1.1"/>
+    <g class="g gira-2"><circle cx="100" cy="100" r="72" stroke="#ff6a2b" stroke-width="4" stroke-dasharray="3 2.2" opacity=".35"/></g>
+    <g class="raios" id="raios"></g>
+    <circle class="miolo" cx="100" cy="100" r="41"/>
+    <circle cx="100" cy="100" r="41" stroke="#ff9a5c" stroke-width="1.2"/>
+    <text class="nome" x="100" y="102">J.A.R.V.I.S.</text>
+    <text class="sub" x="100" y="113" id="reator-sub">EM ESPERA</text>
+  </svg>
+  <span class="sol-status" id="sol-status">EM ESPERA.</span>
+  <span class="sol-legenda calma" id="sol-legenda"></span>
+  <span class="onda">${Array.from({length: 30}, (_, k) => `<i style="--k: ${k}; --h: ${30 + ((k * 37) % 70)}%"></i>`).join('')}</span>`;
+
+// Barras animadas em volta do nome
+let raios = [];
+function montarRaios() {
+  const g = document.getElementById('raios');
+  g.innerHTML = Array.from({length: 72}, () => '<line/>').join('');
+  raios = [...g.children].map((el, i) => ({ el, a: (i * 5) * Math.PI / 180, v: 0 }));
+}
+let ultimoRaio = 0;
+function animarRaios(agora) {
+  requestAnimationFrame(animarRaios);
+  if (agora - ultimoRaio < 50 || !raios.length || document.hidden) return;
+  ultimoRaio = agora;
+  const sol = document.getElementById('sol');
+  const forca = sol?.classList.contains('falando') ? 1 : sol?.classList.contains('escutando') ? 0.55 : 0.12;
+  for (const [i, r] of raios.entries()) {
+    const alvo = forca > 0.5 ? Math.random() * forca : forca * (0.5 + 0.5 * Math.sin(agora / 600 + i * 0.35));
+    r.v += (alvo - r.v) * 0.5;
+    const r0 = 45, r1 = 47 + r.v * 20, c = Math.cos(r.a), s = Math.sin(r.a);
+    r.el.setAttribute('x1', (100 + r0 * c).toFixed(1)); r.el.setAttribute('y1', (100 + r0 * s).toFixed(1));
+    r.el.setAttribute('x2', (100 + r1 * c).toFixed(1)); r.el.setAttribute('y2', (100 + r1 * s).toFixed(1));
+  }
+}
+requestAnimationFrame(animarRaios);
+
+// ---------- Órbita ----------
+function curva([x1, y1], [x2, y2]) {
+  const cx = (x1 + x2) / 2 - (y2 - y1) * 0.18, cy = (y1 + y2) / 2 + (x2 - x1) * 0.18;
+  return `M${x1} ${y1} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2} ${y2}`;
+}
+let orbitaDe = '';
+function montarOrbita() {
+  const ids = equipe.map(m => m.id).join(',');
+  if (ids === orbitaDe) return;
+  orbitaDe = ids;
+  const orb = document.getElementById('orbita');
+  orb.querySelectorAll('.ag, .sol').forEach(el => el.remove());
+  let linhas = '';
+  for (const m of equipe) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.dataset.id = m.id;
+    if (m.id === 'jarvis') {
+      b.className = 'sol'; b.id = 'sol'; b.innerHTML = REATOR;
+      orb.append(b); montarRaios(); continue;
+    }
+    const [x, y] = LUGAR[m.id] || [500, 150];
+    const cor = COR_AGENTE[m.id] || '#ff6a2b';
+    b.className = 'ag';
+    b.style.cssText = `left: ${x / 10}%; top: ${y / 6}%; --s: ${cor}`;
+    b.innerHTML = `<span class="ag-icone">${ICONE[m.id] || ''}<i></i></span>
+      <span class="ag-txt"><em>${esc(ROTULO_AGENTE[m.id] || 'Agente')}</em><b>${esc(m.curto || m.nome)}</b><small></small></span>`;
+    orb.append(b);
+    const d = curva(CENTRO, [x, y]);
+    linhas += `<path class="base" data-linha="${esc(m.id)}" d="${d}"/><path class="cometa" data-linha="${esc(m.id)}" pathLength="100" d="${d}" style="animation-delay: -${(Math.random() * 2).toFixed(2)}s"/>`;
+  }
+  document.getElementById('linhas').innerHTML = linhas;
+}
+
+function atualizarOrbita() {
+  const orb = document.getElementById('orbita');
+  for (const m of equipe) {
+    const el = orb.querySelector(`[data-id="${CSS.escape(m.id)}"]`);
+    if (!el) continue;
+    el.dataset.estado = m.estado;
+    if (el.id === 'sol') { if (!falando) { const leg = document.getElementById('sol-legenda'); if (leg) { leg.textContent = linhaCurta(m); leg.classList.add('calma'); } } }
+    else el.querySelector('small').textContent = linhaCurta(m);
+    for (const p of document.querySelectorAll(`#linhas [data-linha="${CSS.escape(m.id)}"]`)) p.dataset.estado = m.estado;
+  }
+}
+
+// ---------- Gaveta ----------
+document.getElementById('orbita').addEventListener('click', ev => {
+  const el = ev.target.closest('[data-id]');
+  if (el) selecionar(el.dataset.id === selecionado ? null : el.dataset.id);
+});
+document.addEventListener('keydown', ev => ev.key === 'Escape' && selecionar(null));
+document.getElementById('fechar').addEventListener('click', () => selecionar(null));
+
+function selecionar(id) {
+  selecionado = id;
+  const g = document.getElementById('gaveta');
+  if (!id) { g.hidden = true; return; }
+  g.hidden = false;
+  const m = equipe.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('gaveta-titulo').textContent = m.nome;
+  const det = document.getElementById('detalhe');
+  const s = m.sessao;
+  const isJarvis = m.id === 'jarvis';
+  det.innerHTML = `<div class="det-topo">${isJarvis ? '<div class="det-sol"></div>' : `<span class="ag-icone" style="--s: ${COR_AGENTE[m.id] || '#ff6a2b'}">${ICONE[m.id] || ''}<i style="background: ${COR_ESTADO[m.estado]}"></i></span>`}
+    <div><div class="det-projeto">${esc(m.nome)}</div><div class="det-titulo">${s ? esc(s.titulo || '') : 'sem sessão aberta'}</div></div></div>
+    <div class="det-estado" data-estado="${m.estado}">${m.estado === 'offline' ? 'De plantão — abra o Claude Code nesta pasta' : m.estado === 'esperando' ? 'Precisa de você: ' + esc(s?.espera || '') : m.estado === 'trabalhando' ? (s?.ferramenta ? textoFerramenta(s.ferramenta) : 'Pensando…') : 'Parado, esperando um pedido'}</div>
+    ${s ? `<dl><dt>Pasta</dt><dd><code>~/jarvis/agentes/${esc(m.id)}</code></dd>${s.modelo ? `<dt>Modelo</dt><dd>${esc(s.modelo)}</dd>` : ''}</dl>` : `<dl><dt>Para abrir</dt><dd><code>cd ~/jarvis/agentes/${esc(m.id)} && claude</code></dd></dl>`}`;
+  const caixa = document.getElementById('caixa');
+  caixa.hidden = !s || m.estado === 'offline';
+}
+
+// Enviar mensagem
+document.getElementById('enviar').addEventListener('click', async () => {
+  const m = equipe.find(x => x.id === selecionado);
+  if (!m?.sessao) return;
+  const texto = document.getElementById('texto').value.trim();
+  if (!texto) return;
+  document.getElementById('enviar').disabled = true;
+  document.getElementById('dica').textContent = 'enviando…';
+  try {
+    const r = await fetch('/api/enviar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ sessao: m.sessao.id, texto }) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.erro);
+    document.getElementById('texto').value = '';
+    document.getElementById('dica').textContent = 'Enviado!';
+    document.getElementById('dica').className = 'dica';
+  } catch (err) {
+    document.getElementById('dica').textContent = err.message;
+    document.getElementById('dica').className = 'dica erro';
+  }
+  document.getElementById('enviar').disabled = false;
+});
+
+// ---------- SSE ----------
+let sse;
+function conectar() {
+  sse = new EventSource('/api/eventos');
+  sse.addEventListener('estado', ev => {
+    const d = JSON.parse(ev.data);
+    equipe = d.equipe; mensagens = d.mensagens || []; uso = d.uso;
+    if (d.config?.nome) nomeUsuario = d.config.nome;
+    document.getElementById('marca-nome').textContent = `Jarvis · ${nomeUsuario}`;
+    montarOrbita(); atualizarOrbita(); atualizarBarra();
+  });
+  sse.onopen = () => { document.getElementById('conexao').className = 'pill on'; document.getElementById('conexao').innerHTML = '<span class="led"></span><span>conectado</span>'; };
+  sse.onerror = () => { document.getElementById('conexao').className = 'pill'; document.getElementById('conexao').innerHTML = '<span class="led"></span><span>desconectado</span>'; };
+}
+conectar();
+
+function atualizarBarra() {
+  const trab = equipe.filter(m => m.estado === 'trabalhando').length;
+  const esp = equipe.filter(m => m.estado === 'esperando').length;
+  document.getElementById('p-trab').innerHTML = `<span class="led"></span><b>${trab}</b> trabalhando`;
+  const pe = document.getElementById('p-esp');
+  pe.hidden = !esp;
+  pe.innerHTML = `<span class="led" style="--c: var(--laranja)"></span><b>${esp}</b> precisa${esp === 1 ? '' : 'm'} de você`;
+  if (uso) {
+    const u5 = uso.cincoHoras, us = uso.semana;
+    document.getElementById('p-uso').innerHTML = `Plano · ${u5 ? `<b>${Math.round(u5.percentual)}%</b> sessão` : '…'} · ${us ? `<b>${Math.round(us.percentual)}%</b> semana` : '…'}`;
+  }
+}
+
+// ---------- Hora e clima ----------
+function desenharHora() {
+  const d = new Date();
+  document.getElementById('hud-hora').textContent = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('hud-data').textContent = d.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+async function desenharClima() {
+  let pos; try { const salvo = JSON.parse(localStorage.getItem('jarvis-local') || 'null'); if (salvo) pos = salvo; } catch {}
+  if (!pos) { try { pos = await new Promise(ok => navigator.geolocation ? navigator.geolocation.getCurrentPosition(p => ok({lat: p.coords.latitude, lon: p.coords.longitude}), () => ok(null), {timeout: 8000}) : ok(null)); } catch {} }
+  if (!pos) { try { const j = await (await fetch('https://get.geojs.io/v1/ip/geo.json')).json(); if (j.latitude) pos = {lat: +j.latitude, lon: +j.longitude}; } catch {} }
+  if (!pos) return;
+  try { localStorage.setItem('jarvis-local', JSON.stringify(pos)); } catch {}
+  try {
+    const j = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat}&longitude=${pos.lon}&current=temperature_2m,weather_code&timezone=auto`)).json();
+    const temp = Math.round(j.current.temperature_2m);
+    const ceu = j.current.weather_code === 0 ? 'céu limpo' : j.current.weather_code <= 3 ? 'nublado' : j.current.weather_code <= 67 ? 'chuva' : 'tempestade';
+    document.getElementById('hud-temp').textContent = `${temp}°`;
+    document.getElementById('hud-ceu').textContent = ceu;
+  } catch {}
+}
+desenharHora(); setInterval(desenharHora, 15000);
+desenharClima(); setInterval(desenharClima, 30 * 60000);
+
+// ---------- Voz do Jarvis ----------
+const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
+const NOME_JARVIS = /\b(jarvis|jarviz|jarbas|jarves|jarvi|garvis)\b/;
+let jarvisLigado = false, escuta = null, falando = false, atencaoAte = 0, falaAtual = '', ultimaFala = '';
+let filaFala = Promise.resolve(), vozExterna = true, geracao = 0, audioAtual = null;
+const normalizar = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const jarvisBtn = document.getElementById('jarvis');
+const painelJarvis = document.getElementById('ouvindo');
+
+function estadoSol(classe) {
+  const sol = document.getElementById('sol'); if (!sol) return;
+  sol.classList.toggle('escutando', classe === 'ouvindo');
+  sol.classList.toggle('falando', classe === 'falando');
+  const nome = classe === 'ouvindo' ? 'OUVINDO' : classe === 'falando' ? 'RESPONDENDO' : 'EM ESPERA';
+  const ss = document.getElementById('sol-status'); if (ss) ss.textContent = nome + '.';
+  const rs = document.getElementById('reator-sub'); if (rs) rs.textContent = nome;
+}
+function legendaJarvis(texto, calma = false) {
+  const el = document.getElementById('sol-legenda'); if (!el) return;
+  el.textContent = texto; el.classList.toggle('calma', calma);
+}
+
+function ligarJarvis(ligar) {
+  if (ligar && !Reconhecimento) return alert('A voz do Jarvis funciona no Google Chrome.');
+  jarvisLigado = ligar;
+  try { localStorage.setItem('jarvis', ligar ? '1' : '0'); } catch {}
+  jarvisBtn.classList.toggle('ligado', ligar);
+  jarvisBtn.querySelector('span:last-child').textContent = ligar ? 'JARVIS · OUVINDO' : 'JARVIS · DESLIGADO';
+  if (ligar) iniciarEscuta(); else { escuta?.abort(); escuta = null; estadoSol(null); painelJarvis.hidden = true; }
+}
+
+function iniciarEscuta() {
+  if (!jarvisLigado || escuta) return;
+  const r = (escuta = new Reconhecimento());
+  r.lang = 'pt-BR'; r.continuous = true; r.interimResults = true;
+  r.onresult = ev => {
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
+      const frase = ev.results[i][0].transcript.trim();
+      const n = normalizar(frase), achou = NOME_JARVIS.exec(n), final = ev.results[i].isFinal;
+      if (falando) { if (final && /\b(para|chega|silencio)\b/.test(n)) calar(); continue; }
+      if (!final) { if (achou || Date.now() < atencaoAte) { estadoSol('ouvindo'); painelJarvis.hidden = false; painelJarvis.innerHTML = `<b>JARVIS</b>${esc(frase)}<small>ouvindo…</small>`; } continue; }
+      if (achou || Date.now() < atencaoAte || /^bom dia/.test(n)) tratarFrase(frase, n, achou || /bom dia/.exec(n));
+      else estadoSol(null);
+    }
+  };
+  r.onerror = e => { if (e.error === 'not-allowed') { ligarJarvis(false); alert('Permita o microfone no Chrome.'); } };
+  r.onend = () => { if (escuta === r) escuta = null; setTimeout(iniciarEscuta, 400); };
+  try { r.start(); } catch { escuta = null; }
+}
+
+function tratarFrase(frase, n, achou) {
+  atencaoAte = 0;
+  const comando = (achou ? frase.slice(achou.index + achou[0].length) : frase).replace(/^[\s,.!?:;-]+/, '').trim();
+  if (/\bbom dia\b/.test(n)) return bomDia();
+  if (comando.length > 2) return executarComando(comando);
+  atencaoAte = Date.now() + 10000;
+  estadoSol('ouvindo');
+  falar('Pois não?');
+}
+
+const CONFIRMA = ['Certo. Vou cuidar disso.', 'Entendido.', 'Pode deixar.', 'Certo, um momento.'];
+async function executarComando(comando) {
+  const c = normalizar(comando);
+  if (/\b(para|pare)\b.*\b(musica|som)\b/.test(c)) { fetch('/api/musica', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({acao:'parar'})}); return falar('Pronto.'); }
+  if (/\b(toca|tocar|volta)\b.*\bmusica/.test(c)) { tocarMusica(); return; }
+  if (/\b(que horas|horas sao)\b/.test(c)) { const d = new Date(); return falar(`São ${d.getHours()} horas e ${d.getMinutes()} minutos.`); }
+  estadoSol(null);
+  painelJarvis.hidden = false; painelJarvis.innerHTML = `<b>JARVIS</b>${esc(comando)}<small>pedido enviado</small>`;
+  setTimeout(() => painelJarvis.hidden = true, 7000);
+  falar(CONFIRMA[Math.floor(Math.random() * CONFIRMA.length)]);
+  const m = equipe.find(x => x.id === 'jarvis');
+  if (m?.sessao) {
+    try { await fetch('/api/enviar', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({sessao: m.sessao.id, texto: `[Comando de voz] ${comando}`})}); } catch {}
+  }
+}
+
+function calar() { geracao++; speechSynthesis.cancel(); audioAtual?.pause(); audioAtual = null; falando = false; estadoSol(null); atencaoAte = Date.now() + 10000; }
+function comecouAFalar() { falando = true; estadoSol('falando'); }
+function parouDeFalar() { falando = false; estadoSol(null); atencaoAte = Date.now() + 10000; }
+
+async function falarExterno(texto) {
+  try {
+    const r = await fetch('/api/voz', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({texto})});
+    if (!r.ok) { if (/sem voz/.test((await r.json().catch(() => ({}))).erro || '')) vozExterna = false; return false; }
+    const audio = (audioAtual = new Audio('data:audio/mpeg;base64,' + (await r.json()).audio));
+    await new Promise(ok => { audio.onplay = comecouAFalar; audio.onended = audio.onerror = () => { parouDeFalar(); ok(); }; audio.play().catch(() => { parouDeFalar(); ok(); }); });
+    return true;
+  } catch { return false; }
+}
+
+function falarNoMac(texto) {
+  if (!('speechSynthesis' in window)) return Promise.resolve();
+  return new Promise(ok => {
+    const u = new SpeechSynthesisUtterance(texto); u.lang = 'pt-BR';
+    const vozes = speechSynthesis.getVoices().filter(v => /^pt[-_]BR/i.test(v.lang));
+    for (const n of ['google','felipe','luciana','daniel']) { const v = vozes.find(x => x.name.toLowerCase().includes(n)); if (v) { u.voice = v; break; } }
+    u.onstart = comecouAFalar;
+    u.onend = u.onerror = () => { parouDeFalar(); ok(); };
+    speechSynthesis.speak(u);
+  });
+}
+
+function falar(texto) {
+  if (!texto) return filaFala;
+  const g = geracao;
+  return (filaFala = filaFala.then(async () => {
+    if (g !== geracao) return;
+    falaAtual = ultimaFala = texto; legendaJarvis(texto);
+    if (!(vozExterna && await falarExterno(texto))) await falarNoMac(texto);
+  }));
+}
+
+async function tocarMusica() {
+  try {
+    const r = await fetch('/api/musica', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({acao:'tocar', volume: 55})});
+    if (!(await r.json()).ok) falar('Não consegui tocar. O Spotify está aberto?');
+  } catch { falar('Não consegui tocar a música.'); }
+}
+
+async function bomDia() {
+  caler = false;
+  falar(`Bom dia, ${nomeUsuario}.`);
+  tocarMusica();
+  const d = new Date();
+  setTimeout(() => falar(`São ${d.getHours()} horas e ${d.getMinutes()} minutos. Bom trabalho hoje!`), 9000);
+}
+
+jarvisBtn.addEventListener('click', () => ligarJarvis(!jarvisLigado));
+try { if (localStorage.getItem('jarvis') === '1' && Reconhecimento) ligarJarvis(true); } catch {}
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "pastaBase": "~/jarvis/agentes",
+  "agentes": [
+    { "id": "jarvis", "nome": "Jarvis (Central)", "curto": "JARVIS", "pastas": ["jarvis", "central"] },
+    { "id": "nutra", "nome": "Nutra · Completo", "curto": "NUTRA", "pastas": ["nutra"] },
+    { "id": "lancamentos", "nome": "Lançamentos · Completo", "curto": "LANÇ", "pastas": ["lancamentos", "lanc"] }
+  ]
+}
