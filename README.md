@@ -19,7 +19,7 @@ Sistema de agentes de IA para afiliados que usam Google Ads. Inclui:
 2. Rode:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gringa-ads/jarvis/main/instalar.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh)"
 ```
 
 Ou, se já baixou o repositório:
