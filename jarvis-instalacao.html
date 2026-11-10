@@ -1,0 +1,504 @@
+<title>Jarvis — Instalação</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  /* Dark-first: Jarvis command center — single dark theme by design */
+  :root {
+    --bg: #080202; --surface: rgba(20, 8, 6, .92); --surface-raised: rgba(30, 12, 8, .96);
+    --fg: #f0e4dc; --fg-muted: #a08878; --fg-dim: #6a5548;
+    --accent: #ff6a2b; --accent-glow: rgba(255, 106, 43, .15); --accent-dim: #cc5520;
+    --green: #3ef08a; --green-glow: rgba(62, 240, 138, .12);
+    --yellow: #ffc857; --yellow-glow: rgba(255, 200, 87, .12);
+    --border: rgba(255, 110, 60, .18); --border-bright: rgba(255, 110, 60, .35);
+    --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --body: 'Inter', system-ui, -apple-system, sans-serif;
+    --radius: 16px;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  html { background: var(--bg); }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 15px/1.6 var(--body);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 0 80px; }
+
+  /* ── Reactor header ── */
+  .hero { text-align: center; margin-bottom: 56px; position: relative; }
+  .reactor-container { position: relative; width: 140px; height: 140px; margin: 0 auto 24px; }
+  .reactor-svg { width: 100%; height: 100%; }
+  .reactor-ring { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .5; }
+  .reactor-ring-inner { fill: none; stroke: var(--accent); stroke-width: 1; opacity: .3; }
+  .reactor-core { fill: var(--accent); opacity: .9; }
+  .reactor-glow { fill: url(#coreGlow); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin-reverse { to { transform: rotate(-360deg); } }
+  .ring-outer { transform-origin: 70px 70px; animation: spin 20s linear infinite; }
+  .ring-inner { transform-origin: 70px 70px; animation: spin-reverse 14s linear infinite; }
+  @keyframes pulse-glow { 0%, 100% { opacity: .6; } 50% { opacity: 1; } }
+  .reactor-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+  .hero h1 { font: 800 13px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .hero p { font-size: 15px; color: var(--fg-muted); max-width: 440px; margin: 0 auto; line-height: 1.55; }
+  .hero .badge { display: inline-block; font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--green); background: var(--green-glow); border: 1px solid rgba(62, 240, 138, .3); border-radius: 20px; padding: 5px 14px; margin-bottom: 20px; }
+
+  /* ── Nav ── */
+  .nav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+  .nav a { font: 600 12px var(--mono); color: var(--fg-muted); text-decoration: none; padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px; transition: all .2s; }
+  .nav a:hover { color: var(--accent); border-color: var(--border-bright); }
+
+  /* ── Section ── */
+  .section { margin-bottom: 52px; }
+  .section-label { font: 700 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── OS tabs ── */
+  .os-tab { font: 600 12px var(--mono); color: var(--fg-muted); background: transparent; border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; cursor: pointer; transition: all .2s; }
+  .os-tab.active { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
+  .os-tab:hover { border-color: var(--border-bright); }
+  .os-hint { font: 500 11px var(--mono); color: var(--fg-dim); }
+  .win-only { display: none; }
+  body.os-win .win-only { display: inline; }
+  body.os-win .mac-only { display: none; }
+
+  /* ── Install box ── */
+  .install-box { background: var(--surface); border: 1px solid var(--border-bright); border-radius: var(--radius); padding: 24px; position: relative; overflow: hidden; }
+  .install-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+  .install-label { font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-dim); margin-bottom: 12px; }
+  .install-cmd { background: rgba(0,0,0,.4); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; padding-right: 90px; font: 400 13px/1.5 var(--mono); color: var(--fg); word-break: break-all; position: relative; user-select: all; }
+  .install-cmd .sel { color: var(--accent); }
+  .copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font: 600 12px var(--mono); padding: 6px 14px; cursor: pointer; letter-spacing: .04em; transition: filter .15s; }
+  .copy-btn:hover { filter: brightness(1.15); }
+  .copy-btn.done { background: var(--green); color: #0a0404; }
+  .install-note { margin-top: 14px; font-size: 13px; color: var(--fg-dim); line-height: 1.5; }
+
+  /* ── Steps ── */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step { display: grid; grid-template-columns: 40px 1fr; gap: 0 16px; position: relative; }
+  .step-num { grid-column: 1; grid-row: 1; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border-bright); display: grid; place-items: center; font: 700 14px var(--mono); color: var(--accent); background: var(--surface); position: relative; z-index: 1; }
+  .step-content { grid-column: 2; grid-row: 1; padding: 6px 0 32px; min-width: 0; }
+  .step:not(:last-child)::after { content: ''; position: absolute; left: 18px; top: 36px; bottom: 0; width: 1px; background: var(--border); }
+  .step-title { font: 600 15px var(--body); color: var(--fg); margin-bottom: 6px; }
+  .step-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; }
+  .step-desc code { font: 400 12.5px var(--mono); color: var(--accent); background: var(--accent-glow); padding: 2px 7px; border-radius: 5px; word-break: break-all; }
+  .step-desc a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--border); transition: border-color .15s; }
+  .step-desc a:hover { border-color: var(--accent); }
+
+  /* ── Tip box ── */
+  .tip { background: var(--yellow-glow); border: 1px solid rgba(255, 200, 87, .25); border-radius: 10px; padding: 12px 16px; margin-top: 10px; font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
+  .tip strong { color: var(--yellow); font-weight: 600; }
+  .warn { background: rgba(255, 80, 60, .08); border-color: rgba(255, 80, 60, .25); }
+  .warn strong { color: #ff6b5a; }
+
+  /* ── Cards grid ── */
+  .agents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 560px) { .agents { grid-template-columns: 1fr; } }
+  .agent-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; transition: border-color .2s; }
+  .agent-card:hover { border-color: var(--border-bright); }
+  .agent-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .agent-name { font: 700 13px var(--mono); letter-spacing: .06em; color: var(--fg); margin-bottom: 6px; }
+  .agent-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.45; }
+
+  /* ── Tutorial cards ── */
+  .tutorial { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 16px; }
+  .tutorial-title { font: 700 16px var(--body); color: var(--fg); margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+  .tutorial-title .icon { font-size: 22px; }
+  .tutorial-subtitle { font-size: 13px; color: var(--fg-dim); margin-bottom: 20px; }
+  .tutorial ol { list-style: none; padding: 0; counter-reset: t; display: flex; flex-direction: column; gap: 14px; }
+  .tutorial li { counter-increment: t; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; color: var(--fg-muted); line-height: 1.55; }
+  .tutorial li::before { content: counter(t); font: 700 12px var(--mono); color: var(--accent); background: var(--accent-glow); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; margin-top: 1px; }
+  .tutorial li strong { color: var(--fg); font-weight: 600; }
+  .tutorial li code { font: 400 12.5px var(--mono); color: var(--accent); background: var(--accent-glow); padding: 1px 6px; border-radius: 4px; word-break: break-all; }
+  .tutorial li a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--border); }
+  .tutorial li a:hover { border-color: var(--accent); }
+  .tutorial .cmd-block { background: rgba(0,0,0,.4); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font: 400 12.5px/1.5 var(--mono); color: var(--fg); margin-top: 8px; word-break: break-all; }
+  .tutorial .optional-tag { display: inline-block; font: 600 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--fg-dim); background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+
+  /* ── FAQ ── */
+  .faq-item { border-bottom: 1px solid var(--border); padding: 16px 0; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q { font: 600 14px var(--body); color: var(--fg); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .faq-q::after { content: '+'; font: 700 18px var(--mono); color: var(--accent); flex-shrink: 0; transition: transform .2s; }
+  .faq-item.open .faq-q::after { content: '\2212'; }
+  .faq-a { font-size: 14px; color: var(--fg-muted); line-height: 1.6; max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s ease; padding-top: 0; }
+  .faq-item.open .faq-a { max-height: 300px; padding-top: 10px; }
+  .faq-a code { font: 400 12.5px var(--mono); color: var(--accent); background: var(--accent-glow); padding: 1px 6px; border-radius: 4px; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--border); }
+  .footer p { font-size: 13px; color: var(--fg-dim); }
+  .footer .brand { font: 800 11px var(--mono); letter-spacing: .15em; text-transform: uppercase; color: var(--accent); }
+</style>
+
+<div class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="reactor-container">
+      <svg class="reactor-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ff6a2b" stop-opacity=".7"/>
+            <stop offset="60%" stop-color="#ff6a2b" stop-opacity=".15"/>
+            <stop offset="100%" stop-color="#ff6a2b" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle class="reactor-glow" cx="70" cy="70" r="44"/>
+        <g class="ring-outer"><circle class="reactor-ring" cx="70" cy="70" r="54"/>
+          <circle cx="70" cy="16" r="2.5" fill="var(--accent)" opacity=".7"/>
+          <circle cx="124" cy="70" r="2" fill="var(--accent)" opacity=".5"/>
+        </g>
+        <g class="ring-inner"><circle class="reactor-ring-inner" cx="70" cy="70" r="38"/>
+          <circle cx="70" cy="32" r="2" fill="var(--accent)" opacity=".5"/>
+        </g>
+        <circle class="reactor-core" cx="70" cy="70" r="7"/>
+        <circle cx="70" cy="70" r="12" fill="none" stroke="var(--accent)" stroke-width=".8" opacity=".4"/>
+      </svg>
+    </div>
+    <span class="badge">Gringa Ads Academy</span>
+    <h1>J.A.R.V.I.S.</h1>
+    <p>Sistema de agentes de IA para afiliados.<br>Garimpo, copy, páginas e campanhas no Google Ads — tudo pelo Claude Code.</p>
+  </div>
+
+  <!-- Nav -->
+  <div class="nav">
+    <a href="#instalacao">Instalação</a>
+    <a href="#agentes">Agentes</a>
+    <a href="#google-ads">Google Ads</a>
+    <a href="#voz">Voz</a>
+    <a href="#duvidas">Dúvidas</a>
+  </div>
+
+  <!-- Install -->
+  <div class="section" id="instalacao">
+    <div class="section-label">Instalação</div>
+    <div class="install-box">
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="os-tab active" id="tabMac" onclick="switchOS('mac')">🍎 Mac</button>
+        <button class="os-tab" id="tabWin" onclick="switchOS('win')">🪟 Windows</button>
+      </div>
+      <div id="installMac">
+        <div class="install-label">Cole no Terminal e aperte Enter</div>
+        <div class="install-cmd" id="cmdMac">
+          <button class="copy-btn" id="copyBtnMac" onclick="copyCmd('mac')">COPIAR</button>
+          <span class="sel">/bin/bash</span> -c "<span class="sel">$(</span>curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh<span class="sel">)</span>"
+        </div>
+        <div class="install-note">Funciona em qualquer Mac (Apple Silicon ou Intel). Abra o Terminal com <strong>Cmd + Espaço</strong> → digite "Terminal".</div>
+      </div>
+      <div id="installWin" style="display:none">
+        <div class="install-label">Cole no PowerShell e aperte Enter</div>
+        <div class="install-cmd" id="cmdWin">
+          <button class="copy-btn" id="copyBtnWin" onclick="copyCmd('win')">COPIAR</button>
+          irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex
+        </div>
+        <div class="install-note">Funciona em Windows 10/11. Abra o PowerShell: <strong>Win + X</strong> → "Windows PowerShell" (ou pesquise "PowerShell" no menu Iniciar).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Passo a passo -->
+  <div class="section">
+    <div class="section-label">Passo a passo</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Instale o Claude Code</div>
+          <div class="step-desc">
+            Você precisa do plano <strong>Pro</strong> ou <strong>Max</strong> da Anthropic. Baixe em <a href="https://claude.ai/download" target="_blank">claude.ai/download</a>, instale e faça login.
+            <div class="tip"><strong>Dica:</strong> O Claude Code é o app de desktop da Anthropic. Ele roda no Terminal e é o "cérebro" dos seus agentes.</div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Abra o Terminal <span class="os-hint mac-only">(Mac)</span><span class="os-hint win-only">(Windows)</span></div>
+          <div class="step-desc">
+            <span class="mac-only">Aperte <code>Cmd + Espaço</code>, digite <strong>Terminal</strong> e aperte Enter.</span>
+            <span class="win-only">Aperte <code>Win + X</code> e clique em <strong>Windows PowerShell</strong>. Ou pesquise "PowerShell" no menu Iniciar.</span>
+            É nessa tela preta que tudo acontece.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Cole o comando de instalação</div>
+          <div class="step-desc">
+            Copie o comando laranja lá em cima (botão COPIAR), cole no Terminal com <code>Cmd + V</code> e aperte Enter. O instalador vai:
+            <br>&#x2022; Instalar o Node.js (se precisar)
+            <br>&#x2022; Criar a pasta <code>~/jarvis/</code> com tudo
+            <br>&#x2022; Perguntar seu nome
+            <br>&#x2022; Configurar o painel para abrir sozinho
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Abra o Escritório no Chrome</div>
+          <div class="step-desc">
+            Abra o <strong>Google Chrome</strong> e acesse <code>localhost:4848</code>. Esse é o painel do Jarvis — ele mostra seus agentes em tempo real.
+            <div class="tip"><strong>Importante:</strong> Use o Chrome. A voz do Jarvis precisa dele.</div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Ative um agente</div>
+          <div class="step-desc">
+            No Terminal, rode um desses comandos:
+            <div class="cmd-block">cd ~/jarvis/agentes/nutra && claude</div>
+            <div class="cmd-block" style="margin-top:6px">cd ~/jarvis/agentes/lancamentos && claude</div>
+            O agente aparece no painel e você começa a trabalhar com ele.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agents -->
+  <div class="section" id="agentes">
+    <div class="section-label">Seus agentes</div>
+    <div class="agents">
+      <div class="agent-card">
+        <span class="agent-icon">&#x1f916;</span>
+        <div class="agent-name">JARVIS</div>
+        <div class="agent-desc">Central. Orquestra tudo e responde por voz.</div>
+      </div>
+      <div class="agent-card">
+        <span class="agent-icon">&#x1f48a;</span>
+        <div class="agent-name">NUTRA</div>
+        <div class="agent-desc">Garimpo de produtos, copy, página e campanha Google Ads.</div>
+      </div>
+      <div class="agent-card">
+        <span class="agent-icon">&#x1f680;</span>
+        <div class="agent-name">LANÇAMENTOS</div>
+        <div class="agent-desc">Garimpo de eventos, copy, cookie page e campanha Google Ads.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Ads -->
+  <div class="section" id="google-ads">
+    <div class="section-label">Configurar Google Ads</div>
+
+    <div class="tutorial">
+      <div class="tutorial-title"><span class="icon">&#x1f4e2;</span> Google Ads API <span class="optional-tag">Opcional</span></div>
+      <div class="tutorial-subtitle">Permite que os agentes criem campanhas direto pelo Terminal. Faça quando estiver pronto.</div>
+      <ol>
+        <li>
+          <div>
+            <strong>Crie um projeto no Google Cloud</strong><br>
+            Acesse <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a>, faça login com a mesma conta do Google Ads.
+            Clique em <strong>Selecionar projeto</strong> → <strong>Novo projeto</strong>. Dê o nome que quiser (ex: "Jarvis").
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Ative a API do Google Ads</strong><br>
+            No projeto, vá em <strong>APIs e serviços</strong> → <strong>Biblioteca</strong>. Busque <strong>"Google Ads API"</strong> e clique em <strong>Ativar</strong>.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Crie credenciais OAuth 2.0</strong><br>
+            Vá em <strong>APIs e serviços</strong> → <strong>Credenciais</strong> → <strong>Criar credenciais</strong> → <strong>ID do cliente OAuth</strong>.
+            <br>Tipo: <strong>App para computador</strong>.
+            <br>Anote o <strong>Client ID</strong> e o <strong>Client Secret</strong>.
+            <div class="tip"><strong>Tela de consentimento:</strong> Se pedir, configure com tipo "Externo", coloque seu e-mail como teste e preencha o nome do app (ex: "Jarvis").</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Pegue o Developer Token</strong><br>
+            Acesse <a href="https://ads.google.com/aw/apicenter" target="_blank">ads.google.com/aw/apicenter</a> na sua conta MCC.
+            Copie o <strong>Developer Token</strong>. Se estiver como "Pendente", tudo bem — funciona para a sua conta.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Anote o ID da conta MCC</strong><br>
+            No Google Ads, o número no canto superior direito (formato xxx-xxx-xxxx). Tire os traços.
+            <br>Exemplo: se é <code>123-456-7890</code>, anote <code>1234567890</code>.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Coloque as credenciais no Jarvis</strong><br>
+            No Terminal, rode:
+            <div class="cmd-block">nano ~/jarvis/.google-ads.env</div>
+            Preencha com os 4 valores:
+            <div class="cmd-block">GOOGLE_ADS_CLIENT_ID=seu-client-id.apps.googleusercontent.com
+GOOGLE_ADS_CLIENT_SECRET=seu-client-secret
+GOOGLE_ADS_DEVELOPER_TOKEN=seu-developer-token
+GOOGLE_ADS_LOGIN_CUSTOMER_ID=1234567890</div>
+            Salve com <code>Ctrl + O</code>, Enter, depois <code>Ctrl + X</code> para sair.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Autorize o acesso</strong><br>
+            Rode no Terminal:
+            <div class="cmd-block">~/jarvis/bin/google-ads-autorizar</div>
+            Vai abrir o navegador pedindo para autorizar. Faça login e autorize. Pronto!
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Teste criando uma campanha</strong><br>
+            Peça para o agente de Nutra ou Lançamentos criar uma campanha. Ele monta o JSON e roda:
+            <div class="cmd-block">~/jarvis/bin/google-ads criar campanha.json --simular</div>
+            O <code>--simular</code> só mostra o que seria criado. Sem ele, cria de verdade — mas <strong>sempre pausada</strong>.
+            <div class="tip warn"><strong>Importante:</strong> Campanhas são criadas SEMPRE pausadas. Você revisa no Google Ads e ativa quando quiser.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Voice -->
+  <div class="section" id="voz">
+    <div class="section-label">Configurar a voz</div>
+
+    <div class="tutorial">
+      <div class="tutorial-title"><span class="icon">&#x1f3a4;</span> Voz do Jarvis</div>
+      <div class="tutorial-subtitle">O Jarvis fala usando o navegador (voz robótica) ou o Fish Audio (voz realista e grátis).</div>
+      <ol>
+        <li>
+          <div>
+            <strong>Ative a voz básica</strong><br>
+            No painel (<code>localhost:4848</code>), clique em <strong>"JARVIS · DESLIGADO"</strong> no topo. O Chrome vai pedir permissão para usar o microfone — aceite. Agora diga <strong>"Jarvis, bom dia"</strong> e ele responde.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Crie conta no Fish Audio (grátis)</strong><br>
+            Acesse <a href="https://fish.audio" target="_blank">fish.audio</a> e crie uma conta. Vá em <strong>API Keys</strong> no seu perfil e crie uma chave.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Configure no Jarvis</strong><br>
+            Abra <code>localhost:4848/voz.html</code> no Chrome. Cole a chave da API, escolha "Fish Audio" e clique em <strong>Salvar</strong>. Teste com o botão "Testar voz".
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Voz clonada (opcional)</strong><br>
+            No Fish Audio, você pode criar uma voz clonada. Depois de criar, copie o ID da voz e cole no campo "ID da Voz" em <code>localhost:4848/voz.html</code>.
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="tutorial" style="margin-top: 16px">
+      <div class="tutorial-title"><span class="icon">&#x1f3b5;</span> Música e Spotify</div>
+      <div class="tutorial-subtitle">O comando "Bom dia" toca Back in Black no Spotify.</div>
+      <ol>
+        <li>
+          <div>
+            <strong>Instale o Spotify (app, não web)</strong><br>
+            Baixe o Spotify em <a href="https://spotify.com/download" target="_blank">spotify.com/download</a> e faça login. Abra pelo menos uma vez.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Use o comando</strong><br>
+            Com a voz ativa, diga <strong>"Jarvis, bom dia"</strong>. Ele toca Back in Black (no riff, pulando a intro) e dá o briefing do dia.
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section" id="duvidas">
+    <div class="section-label">Dúvidas comuns</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">O painel não abre no Chrome?</div>
+      <div class="faq-a">Rode no Terminal: <code>~/jarvis/escritorio/server.mjs</code> e veja se aparece algum erro. Se disser "porta em uso", alguma coisa já está na 4848. Feche e tente de novo.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">O agente não aparece no painel?</div>
+      <div class="faq-a">O painel lê as sessões do Claude Code. Abra o agente com <code>cd ~/jarvis/agentes/nutra && claude</code> e aguarde uns 5 segundos — ele aparece.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Google Ads dá erro de autorização?</div>
+      <div class="faq-a">Rode <code>~/jarvis/bin/google-ads-autorizar</code> de novo. Se continuar, confira se o Client ID e Secret estão certos em <code>~/jarvis/.google-ads.env</code>.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">O Developer Token está como "Pendente"?</div>
+      <div class="faq-a">Sem problema. O token pendente funciona para acessar suas próprias contas. Você só precisa de aprovação do Google se quiser acessar contas de terceiros.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">A voz não funciona?</div>
+      <div class="faq-a">A voz só funciona no Google Chrome. Verifique se o Chrome pediu permissão do microfone e se você aceitou. Tente recarregar a página.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Spotify não toca a música?</div>
+      <div class="faq-a">O Spotify precisa estar instalado como app (não a versão web). Abra o Spotify pelo menos uma vez e faça login antes de usar o "Bom dia".</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Como atualizo o Jarvis?</div>
+      <div class="faq-a">Rode o comando de instalação de novo. Ele sobrescreve os arquivos com a versão mais recente sem perder suas configurações (nome, credenciais).</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p class="brand">Gringa Ads Academy</p>
+    <p style="margin-top: 8px;">Dúvidas? Manda no grupo da mentoria.</p>
+  </div>
+
+</div>
+
+<script>
+const cmds = {
+  mac: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh)"`,
+  win: `irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex`
+};
+
+function switchOS(os) {
+  document.getElementById('installMac').style.display = os === 'mac' ? '' : 'none';
+  document.getElementById('installWin').style.display = os === 'win' ? '' : 'none';
+  document.getElementById('tabMac').classList.toggle('active', os === 'mac');
+  document.getElementById('tabWin').classList.toggle('active', os === 'win');
+  document.body.classList.toggle('os-win', os === 'win');
+}
+
+function copyCmd(os) {
+  const cmd = cmds[os];
+  const btn = document.getElementById(os === 'mac' ? 'copyBtnMac' : 'copyBtnWin');
+  try {
+    navigator.clipboard.writeText(cmd).then(() => {
+      btn.textContent = 'COPIADO';
+      btn.classList.add('done');
+      setTimeout(() => { btn.textContent = 'COPIAR'; btn.classList.remove('done'); }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = cmd; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      btn.textContent = 'COPIADO'; btn.classList.add('done');
+      setTimeout(() => { btn.textContent = 'COPIAR'; btn.classList.remove('done'); }, 2000);
+    });
+  } catch(e) {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(document.getElementById(os === 'mac' ? 'cmdMac' : 'cmdWin'));
+    sel.removeAllRanges(); sel.addRange(range);
+  }
+}
+
+// Detectar sistema automaticamente
+if (navigator.userAgent.indexOf('Win') !== -1) switchOS('win');
+</script>
