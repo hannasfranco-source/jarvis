@@ -85,13 +85,28 @@ else
   fi
 fi
 
-# ─── 4. Criar estrutura ───
+# ─── 4. Baixar arquivos se rodando via curl/pipe ───
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [ ! -f "$SCRIPT_DIR/escritorio/server.mjs" ]; then
+  info "Baixando arquivos do Jarvis..."
+  TEMP_DIR="$(mktemp -d)"
+  curl -fsSL "https://github.com/hannasfranco-source/jarvis/archive/refs/heads/main.tar.gz" | tar xz -C "$TEMP_DIR"
+  SCRIPT_DIR="$TEMP_DIR/jarvis-main"
+  if [ ! -f "$SCRIPT_DIR/escritorio/server.mjs" ]; then
+    erro "Não consegui baixar os arquivos. Tente baixar o ZIP manualmente:"
+    erro "https://github.com/hannasfranco-source/jarvis/archive/refs/heads/main.zip"
+    rm -rf "$TEMP_DIR"
+    exit 1
+  fi
+  ok "Arquivos baixados"
+fi
+
+# ─── 5. Criar estrutura ───
 echo ""
 info "Criando a pasta do Jarvis em ~/jarvis..."
 mkdir -p "$JARVIS_DIR"/{agentes/{jarvis,nutra,lancamentos},escritorio/public,bin,entregas,logs}
 
-# ─── 5. Copiar arquivos ───
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# ─── 6. Copiar arquivos ───
 info "Copiando arquivos..."
 
 cp "$SCRIPT_DIR/escritorio/server.mjs" "$JARVIS_DIR/escritorio/"
@@ -120,7 +135,7 @@ chmod +x "$JARVIS_DIR/bin/google-ads-autorizar"
 
 ok "Arquivos copiados"
 
-# ─── 6. Perguntar o nome ───
+# ─── 7. Perguntar o nome ───
 echo ""
 read -rp "  Qual é o seu nome? " NOME
 NOME="${NOME:-Aluno}"
@@ -141,7 +156,7 @@ sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/agentes/jarvis/CLAUDE.md" 2>/dev/nul
 sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/agentes/nutra/CLAUDE.md" 2>/dev/null || true
 sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/agentes/lancamentos/CLAUDE.md" 2>/dev/null || true
 
-# ─── 7. Configurar Google Ads (opcional) ───
+# ─── 8. Configurar Google Ads (opcional) ───
 echo ""
 echo -e "  ${COR}─── Google Ads (opcional, pode fazer depois) ───${RESET}"
 echo ""
@@ -179,7 +194,7 @@ EOF
   info "Sem problema! Quando tiver, edite ~/jarvis/.google-ads.env"
 fi
 
-# ─── 8. Configurar o escritório para ligar sozinho ───
+# ─── 9. Configurar o escritório para ligar sozinho ───
 echo ""
 info "Configurando o Escritório para ligar com o Mac..."
 PLIST="$HOME/Library/LaunchAgents/com.jarvis.escritorio.plist"
@@ -210,7 +225,10 @@ launchctl bootout gui/$(id -u) "$PLIST" 2>/dev/null || true
 launchctl bootstrap gui/$(id -u) "$PLIST" 2>/dev/null || true
 ok "Escritório configurado em http://localhost:4848"
 
-# ─── 9. Resumo final ───
+# Limpar arquivos temporários
+[ -n "$TEMP_DIR" ] && rm -rf "$TEMP_DIR"
+
+# ─── 10. Resumo final ───
 echo ""
 echo -e "${COR}   ╭─────────────────────────────────────╮${RESET}"
 echo -e "${COR}   │         INSTALAÇÃO CONCLUÍDA!        │${RESET}"
