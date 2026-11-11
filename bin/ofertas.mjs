@@ -37,10 +37,11 @@ const link = (u, t) => (eUrl(u) ? `<a href="${esc(u)}" target="_blank" rel="noop
 const linha = (rotulo, valor, html = false) => (valor ? `<div class="l"><span>${rotulo}</span><div>${html ? valor : esc(valor)}</div></div>` : '');
 const data = rodada.data || pasta.replace(/^ofertas-(nutra|lancamentos)-/, '');
 
-const cabecalho = NUTRA ? ['Produto', 'Plataforma', 'Página oficial', 'Trends'] : ['Produtor', 'Evento', 'Datas', 'Página de captação', 'Comissão'];
+const temComissao = ofertas.some((o) => o.comissao);
+const cabecalho = NUTRA ? ['Produto', 'Plataforma', 'Página oficial', 'Trends'] : ['Produtor', 'Evento', 'Datas', 'Página de captação', ...(temComissao ? ['Comissão'] : [])];
 const linhaResumo = (o) => (NUTRA
   ? `<td><b>${esc(o.produto)}</b></td><td>${esc(o.plataforma || '—')}</td><td>${link(o.pagina, 'abrir')}</td><td>${esc(o.trends || '—')}</td>`
-  : `<td><b>${esc(o.produtor)}</b></td><td>${esc(o.evento)}</td><td>${esc(o.datas || '—')}</td><td>${link(o.pagina, 'abrir página')}</td><td>${esc(o.comissao || '—')}</td>`);
+  : `<td><b>${esc(o.produtor)}</b></td><td>${esc(o.evento)}</td><td>${esc(o.datas || '—')}</td><td>${link(o.pagina, 'abrir página')}</td>${temComissao ? `<td>${esc(o.comissao || '—')}</td>` : ''}`);
 
 const detalhes = (o) => (NUTRA
   ? [linha('Site oficial', link(o.pagina), true), linha('Plataforma', o.plataforma), linha('Checkout', link(o.checkout), true),
@@ -48,7 +49,7 @@ const detalhes = (o) => (NUTRA
   : [linha('Página de captação', link(o.pagina), true), linha('Datas', o.datas), linha('Gratuito ou pago', o.preco), linha('Comissão', o.comissao),
      linha('Afiliação', eUrl(o.afiliacao) ? link(o.afiliacao, 'programa de afiliados') : o.afiliacao || 'pedir por e-mail', eUrl(o.afiliacao)),
      linha('Contato (fonte)', o.contato), linha('Instagram do expert', eUrl(o.instagram) ? link(o.instagram) : o.instagram, eUrl(o.instagram)),
-     linha('Como confirmei o lançamento', o.confirmacao), linha('Fontes', o.fontes), linha('Atenção', o.riscos)]).join('');
+     linha('Como confirmei o lançamento', o.confirmacao), linha('Fontes', o.fontes), linha('Situação', o.situacao), linha('Atenção', o.riscos)]).join('');
 
 const blocos = ofertas.map((o, i) => `
 <section class="card">
@@ -88,7 +89,6 @@ const html = `<!doctype html>
 ${ofertas.length ? `<div class="tabela"><table><tr>${cabecalho.map((c) => `<th>${c}</th>`).join('')}</tr>${ofertas.map((o) => `<tr>${linhaResumo(o)}</tr>`).join('')}</table></div>` : '<p>Nenhuma oferta nova passou nos critérios nesta rodada.</p>'}
 ${blocos}
 ${naoPassaram}
-${NUTRA ? '' : '<div data-adicionar></div>'}
 </main>
 <script src="/aprovar-ofertas.js"></script>
 </body></html>`;

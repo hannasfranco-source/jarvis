@@ -413,24 +413,6 @@ function decidirOferta({ pasta, id, decisao, nota = '' }) {
   return { ok: true, ...registro };
 }
 
-// "Achei um lançamento por conta": adicionar já é aprovar.
-function adicionarOferta(d) {
-  const campo = (k, n = 400) => String(d?.[k] || '').trim().slice(0, n);
-  const produtor = campo('produtor', 120), evento = campo('evento', 160), pagina = campo('pagina', 500);
-  if (!produtor || !evento) throw new Error('preencha o produtor e o nome do evento');
-  if (pagina && !/^https?:\/\/\S+$/i.test(pagina)) throw new Error('o link da página de captação precisa começar com http:// ou https://');
-  const pasta = 'ofertas-lancamentos-minhas', dir = path.join(ENTREGAS_DIR, pasta), arq = path.join(dir, 'ofertas.json');
-  fs.mkdirSync(dir, { recursive: true });
-  const lista = lerLista(arq);
-  const base = `${new Date().toLocaleDateString('sv-SE')}-${`${evento} ${produtor}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48)}`;
-  let id = base;
-  for (let n = 2; lista.some((x) => x.id === id); n++) id = `${base}-${n}`;
-  lista.push({ id, produtor, evento, pagina, datas: campo('datas', 200), pais: campo('pais', 80), preco: campo('preco', 120), comissao: campo('comissao', 200),
-    contato: campo('contato', 200), resumo: campo('nota', 1000) || 'Lançamento pesquisado pelo aluno.', origem: 'pesquisa do aluno', adicionadaEm: new Date().toISOString() });
-  gravarJson(arq, lista);
-  return decidirOferta({ pasta, id, decisao: 'aprovar', nota: campo('nota', 1000) });
-}
-
 function servirEntregas(req, res, url) {
   let rel;
   try { rel = decodeURIComponent(url.pathname.slice('/entregas'.length)).replace(/^\/+/, ''); } catch { return json(res, 400, { erro: 'endereço inválido' }); }
@@ -459,7 +441,7 @@ function servirEntregas(req, res, url) {
 
 const ROTAS = {
   '/api/enviar': novaMensagem, '/api/mod/inbox': caixaDeEntrada, '/api/mod/inbox/ack': confirmarEntrega,
-  '/api/mod/uso': guardarUso, '/api/ofertas/decidir': decidirOferta, '/api/ofertas/adicionar': adicionarOferta, '/api/musica': musica, '/api/voz': voz, '/api/voz/chave': guardarChaveVoz, '/api/voz/config': configurarVoz,
+  '/api/mod/uso': guardarUso, '/api/ofertas/decidir': decidirOferta, '/api/musica': musica, '/api/voz': voz, '/api/voz/chave': guardarChaveVoz, '/api/voz/config': configurarVoz,
 };
 
 const servidor = http.createServer((req, res) => {

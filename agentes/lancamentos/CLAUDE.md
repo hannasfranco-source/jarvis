@@ -20,7 +20,7 @@ conectadas, não comente e siga o trabalho.
    só entregue e termine: não peça nada.
 
 **Parte 2 — Aprovação ({{NOME}} decide)**
-4. No começo de toda conversa, leia os `decisoes.json` de `~/jarvis/entregas/ofertas-lancamentos-*/` (e `ofertas-lancamentos-minhas`, se existir):
+4. No começo de toda conversa, leia os `decisoes.json` de `~/jarvis/entregas/ofertas-lancamentos-*/`:
    - **Aprovado**: confira se {{NOME}} já é afiliado (então só registre); programa aberto (formulário) → peça para {{NOME}} se inscrever; senão, **envie agora o e-mail inicial de afiliação** (seção "E-mail"; idioma do lançamento; contato com fonte; se faltar contato, pesquise). Quando o produtor responder com o link, siga para a Parte 3.
    - **Recusado**: não ofereça de novo.
    - **Sem decisão**: lembre {{NOME}} que a página está esperando, com o link.

@@ -69,6 +69,127 @@
   details summary::before { content:'▸ ';color:var(--fg-dim); }
   details[open] summary::before { content:'▾ '; }
 
+  .big-step { display:flex; gap:14px; align-items:flex-start; margin-bottom:18px; font-size:15px; color:var(--fg-muted); }
+  .big-step .bn { flex-shrink:0; width:32px; height:32px; border-radius:50%; background:var(--accent-glow); border:1.5px solid var(--accent); color:var(--accent); display:grid; place-items:center; font:700 14px var(--mono); }
+  .big-step strong { color:var(--fg); }
+  .big-step code { font:400 13px var(--mono); color:var(--accent); background:var(--accent-glow); padding:2px 7px; border-radius:5px; }
+
+  /* ── Instalação ilustrada ── */
+  .calm { background: var(--green-glow); border: 1px solid rgba(62,240,138,.3); border-radius: 12px; padding: 14px 16px; font-size: 14px; color: var(--fg-muted); line-height: 1.55; }
+  .calm strong { color: var(--green); }
+  .ill-step { margin-bottom: 36px; }
+  .ill-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; font-size: 16px; color: var(--fg); line-height: 1.45; }
+  .ill-head .sub { font-size: 14px; color: var(--fg-muted); }
+  .ill-head .sub b { color: var(--accent); font-weight: 700; }
+  .ill-head .bn { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font: 800 15px var(--mono); }
+  .keys { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 14px 48px; }
+  .key { font: 700 14px var(--mono); color: var(--fg); background: linear-gradient(#3a2a24,#241713); border: 1px solid var(--border-bright); border-bottom-width: 3px; border-radius: 8px; padding: 8px 14px; min-width: 44px; text-align: center; }
+  .plus { font: 600 13px var(--mono); color: var(--fg-dim); }
+  .ill-step > .download-btn { margin-left: 48px; }
+  .ill-step > .mock-spot, .ill-step > .mock-start, .ill-step > .mock-win, .ill-step > .mock-chrome, .ill-step > .hint { margin-left: 48px; }
+  @media (max-width: 560px) { .keys, .ill-step > .download-btn, .ill-step > .mock-spot, .ill-step > .mock-start, .ill-step > .mock-win, .ill-step > .mock-chrome, .ill-step > .hint { margin-left: 0; } }
+  .caret { display: inline-block; width: 8px; height: 1.1em; background: currentColor; vertical-align: text-bottom; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .spot-enter { margin-left: auto; font: 700 11px var(--mono); color: #fff; background: var(--accent); border-radius: 6px; padding: 4px 8px; white-space: nowrap; }
+
+  .mock-spot, .mock-start { max-width: 460px; background: #2b2b2f; border-radius: 16px; padding: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.1); color: #eee; font: 400 15px var(--body); }
+  .spot-bar, .start-search { display: flex; align-items: center; gap: 10px; padding: 8px 10px; font-size: 20px; }
+  .spot-txt { font-size: 20px; }
+  .spot-res, .start-res { display: flex; align-items: center; gap: 12px; background: rgba(10,132,255,.9); border-radius: 10px; padding: 10px 12px; margin-top: 6px; }
+  .spot-res small, .start-res small { opacity: .8; font-size: 12px; }
+  .term-ico { width: 36px; height: 36px; border-radius: 8px; background: #000; border: 1px solid #555; color: #fff; display: grid; place-items: center; font: 700 14px var(--mono); flex-shrink: 0; }
+  .mock-start { background: #1f2a3a; }
+  .start-res { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); }
+  .ps-ico { width: 36px; height: 36px; border-radius: 8px; background: #012456; border: 1px solid #5b8bd6; color: #fff; display: grid; place-items: center; font: 700 14px var(--mono); flex-shrink: 0; }
+
+  .mock-win { max-width: 560px; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.12); }
+  .win-bar { display: flex; align-items: center; gap: 7px; background: #3b3b3f; padding: 9px 12px; font: 500 12px var(--body); color: #bbb; }
+  .win-bar span { margin: 0 auto; transform: translateX(-24px); }
+  .win-bar.win { background: #fff; color: #222; justify-content: space-between; }
+  .win-bar.win span { margin: 0; transform: none; }
+  .d { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .d.r { background: #ff5f57; } .d.y { background: #febc2e; } .d.g { background: #28c840; }
+  .win-body { background: #1e1e1e; color: #e8e8e8; font: 400 12.5px/1.7 var(--mono); padding: 14px; word-break: break-all; }
+  .mock-win.ps .win-body { background: #012456; color: #f2f2f2; }
+  .win-body .dim { color: #8aa; }
+  .win-body .paste { background: rgba(255,106,43,.25); outline: 1px solid var(--accent); border-radius: 3px; padding: 0 3px; }
+  .win-body .ok { color: #3ef08a; font-weight: 700; }
+  .win-body .ask { color: #ffc857; }
+
+  .mock-chrome { max-width: 520px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.14); box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+  .chrome-tabs { display: flex; gap: 7px; align-items: center; background: #202124; padding: 8px 12px; }
+  .chrome-tabs .tab { background: #35363a; color: #ddd; font: 500 12px var(--body); padding: 6px 16px; border-radius: 8px 8px 0 0; margin-left: 12px; }
+  .chrome-bar { background: #35363a; padding: 8px 12px; }
+  .chrome-bar .url { display: block; background: #202124; color: #fff; border-radius: 20px; padding: 8px 16px; font: 500 14px var(--body); }
+  .chrome-body { background: #080202; color: var(--fg-muted); padding: 28px 16px; text-align: center; font-size: 14px; }
+  .chrome-body b { color: var(--accent); letter-spacing: .1em; }
+  .hint { max-width: 560px; margin-top: 12px; font-size: 13px; color: var(--fg-muted); background: var(--yellow-glow); border: 1px solid rgba(255,200,87,.25); border-radius: 10px; padding: 12px 14px; line-height: 1.55; }
+  .hint b { color: var(--yellow); }
+
+
+  /* ── Mock do app Claude ── */
+  .mock-app { max-width: 560px; margin-left: 48px; background: #f4f1ea; color: #2b2723; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.14); box-shadow: 0 10px 40px rgba(0,0,0,.5); font: 400 14px var(--body); }
+  @media (max-width: 560px) { .mock-app { margin-left: 0; } }
+  .app-bar { display: flex; gap: 7px; padding: 10px 12px; background: #e7e2d8; }
+  .app-tabs { display: flex; gap: 8px; padding: 10px 14px 0; border-bottom: 1px solid #ddd6c8; }
+  .atab { padding: 7px 16px; border-radius: 8px 8px 0 0; color: #7a7268; font-weight: 600; }
+  .atab.on { background: #fff; color: #2b2723; box-shadow: 0 0 0 2px var(--accent); border-radius: 8px; margin-bottom: 8px; }
+  .atab em { font-style: normal; font-size: 12px; color: var(--accent-dim); margin-left: 6px; }
+  .app-body { padding: 32px 16px 40px; text-align: center; }
+  .app-hello { font: 600 20px var(--body); color: #4a423a; }
+  .app-input { display: flex; align-items: flex-end; gap: 10px; margin: 14px; padding: 12px 14px; background: #fff; border: 1.5px solid #d9d1c2; border-radius: 14px; }
+  .paste-line { flex: 1; min-width: 0; background: rgba(255,106,43,.14); border-radius: 4px; padding: 2px 4px; }
+  .send { flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 800; }
+  .app-chat { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .bub { max-width: 80%; padding: 10px 14px; border-radius: 14px; }
+  .bub.ai { background: #fff; border: 1px solid #ddd6c8; align-self: flex-start; }
+  .bub.me { background: var(--accent); color: #fff; align-self: flex-end; font-weight: 600; }
+  .perm { margin: 16px; padding: 14px; background: #fff; border: 1.5px solid #d9d1c2; border-radius: 12px; }
+  .perm-t { font-weight: 600; margin-bottom: 12px; }
+  .perm-b { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pbtn { padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; }
+  .pbtn.no { background: #ece7dc; color: #5a5249; }
+  .pbtn.yes { background: var(--accent); color: #fff; box-shadow: 0 0 0 3px rgba(255,106,43,.3); }
+
+  .shot { max-width: 420px; margin-left: 48px; border-radius: 12px; overflow: hidden; border: 2px solid var(--accent); box-shadow: 0 10px 40px rgba(0,0,0,.5); background: #fff; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot-cap { background: var(--surface-raised); color: var(--fg-muted); font-size: 13px; padding: 10px 14px; line-height: 1.5; }
+  .shot-cap b { color: var(--accent); }
+  @media (max-width: 560px) { .shot { margin-left: 0; } }
+  .conn-title { font: 700 17px var(--body); color: var(--fg); margin: 28px 0 16px; display: flex; align-items: center; flex-wrap: wrap; }
+  .conn-list { padding: 14px; }
+  .conn-row { display: flex; align-items: center; gap: 12px; background: #fff; border: 1.5px solid #d9d1c2; border-radius: 12px; padding: 12px 14px; flex-wrap: wrap; }
+  .conn-row small { color: #7a7268; }
+  .conn-row .pbtn { margin-left: auto; }
+  .conn-ico { width: 38px; height: 38px; border-radius: 10px; background: #2b2723; color: #fff; display: grid; place-items: center; font-weight: 800; flex-shrink: 0; }
+  .hp { display: flex; min-height: 130px; }
+  .hp-side { display: flex; flex-direction: column; gap: 2px; background: #e9e4f5; padding: 12px; min-width: 120px; font-weight: 600; font-size: 13px; color: #5a4f7a; }
+  .hp-side span { padding: 7px 10px; border-radius: 8px; }
+  .hp-side .on { background: #673de6; color: #fff; }
+  .hp-main { padding: 18px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .hp-token { background: #fff; border: 1.5px dashed #b9aee0; border-radius: 10px; padding: 10px 14px; font: 500 13px var(--mono); word-break: break-all; }
+  .flow { display: flex; flex-direction: column; gap: 12px; margin: 24px 0 16px; }
+  .flow-item { display: flex; gap: 14px; align-items: flex-start; background: rgba(0,0,0,.25); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 15px; color: var(--fg); line-height: 1.5; }
+  .flow-item .sub { font-size: 14px; color: var(--fg-muted); }
+  .flow-item .sub b, .flow-sub b { color: var(--accent); }
+  .who { flex-shrink: 0; font: 700 11px var(--mono); letter-spacing: .04em; border-radius: 20px; padding: 5px 10px; white-space: nowrap; margin-top: 2px; }
+  .who.ag { background: var(--green-glow); color: var(--green); border: 1px solid rgba(62,240,138,.3); }
+  .who.vc { background: var(--accent-glow); color: var(--accent); border: 1px solid var(--border-bright); }
+  .flow-sub { margin: 8px 0 0 18px; padding: 0; color: var(--fg-muted); font-size: 14px; line-height: 1.7; }
+  .sub-p { font-size: 14px; color: var(--fg-muted); margin: 10px 0; line-height: 1.55; }
+  .sub-p b { color: var(--fg); }
+  .sched { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 12px 0 16px; font-size: 14px; }
+  .sched-row { display: grid; grid-template-columns: 1fr 1.4fr 1.2fr; gap: 10px; padding: 10px 14px; color: var(--fg-muted); border-top: 1px solid var(--border); }
+  .sched-row:first-child { border-top: none; }
+  .sched-row.head { font: 700 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-dim); background: rgba(0,0,0,.25); }
+  .sched-row span:first-child { color: var(--fg); font-weight: 600; }
+  .say { background: var(--accent-glow); border: 1px solid var(--border-bright); border-left: 3px solid var(--accent); border-radius: 8px; padding: 10px 14px; margin: 8px 0; font-size: 14px; color: var(--fg); }
+  @media (max-width: 560px) { .flow-item { flex-direction: column; gap: 8px; } .sched-row { grid-template-columns: 1fr; gap: 2px; } .sched-row.head { display: none; } }
+  .plano-b { margin: 8px 0 8px 48px; border: 1px solid rgba(255,200,87,.3); background: var(--yellow-glow); border-radius: 12px; padding: 4px 16px; }
+  .plano-b summary { cursor: pointer; font: 600 14px var(--body); color: var(--yellow); padding: 12px 0; }
+  .plano-b-body { padding: 4px 0 14px; }
+  .plano-b .big-step { margin-bottom: 14px; }
+  @media (max-width: 560px) { .plano-b { margin-left: 0; } }
   /* ── OS tabs ── */
   .os-tab { font: 600 12px var(--mono); color: var(--fg-muted); background: transparent; border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; cursor: pointer; transition: all .2s; }
   .os-tab.active { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
@@ -86,6 +207,7 @@
   .install-cmd .sel { color: var(--accent); }
   .copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font: 600 12px var(--mono); padding: 6px 14px; cursor: pointer; letter-spacing: .04em; transition: filter .15s; }
   .copy-btn:hover { filter: brightness(1.15); }
+  .download-btn.done { background:var(--green); color:#0a0404; box-shadow:none; }
   .copy-btn.done { background: var(--green); color: #0a0404; }
   .install-note { margin-top: 14px; font-size: 13px; color: var(--fg-dim); line-height: 1.5; }
 
@@ -180,6 +302,8 @@
   <!-- Nav -->
   <div class="nav">
     <a href="#instalacao">Instalação</a>
+    <a href="#conexoes">Conexões</a>
+    <a href="#funcionamento">Como funciona</a>
     <a href="#agentes">Agentes</a>
     <a href="#google-ads">Google Ads</a>
     <a href="#voz">Voz</a>
@@ -189,94 +313,205 @@
   <!-- Install -->
   <div class="section" id="instalacao">
     <div class="section-label">Instalação</div>
-    <div class="install-box" style="text-align:center">
-      <div class="install-label" style="text-align:center;margin-bottom:20px">Clique no botão do seu sistema</div>
-      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-        <a href="https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar-jarvis.command" download="instalar-jarvis.command" class="download-btn" id="btnMac">🍎 Baixar para Mac</a>
-        <a href="https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar-jarvis.bat" download="instalar-jarvis.bat" class="download-btn download-btn-alt" id="btnWin">🪟 Baixar para Windows</a>
-      </div>
-      <div class="install-note" style="text-align:center;margin-top:20px">
-        Baixe o arquivo e dê <strong>dois cliques</strong> nele. O instalador abre sozinho e cuida de tudo.
-      </div>
-      <div class="tip" style="margin-top:16px">
-        <strong>Mac:</strong> Se aparecer "não pode ser aberto", clique com o <strong>botão direito</strong> no arquivo → <strong>Abrir</strong> → <strong>Abrir</strong> de novo.<br>
-        <strong>Windows:</strong> Se aparecer "Windows protegeu seu PC", clique em <strong>Mais informações</strong> → <strong>Executar assim mesmo</strong>.
-      </div>
-    </div>
+    <div class="install-box">
+      <div class="calm">💚 <strong>Fica tranquilo(a):</strong> você não vai usar Terminal nem mexer em nada técnico. Você só cola um texto no app do Claude e <strong>ele instala tudo por você</strong>. As telas abaixo mostram o que vai aparecer.</div>
+      <div class="tip" style="margin-top:12px"><strong>Antes de começar:</strong> tenha o <strong>app do Claude instalado no computador</strong> e com login feito (plano Pro ou Max). Baixe em <a href="https://claude.ai/download" target="_blank" style="color:var(--accent)">claude.ai/download</a>. Não funciona pelo site, precisa ser o app.</div>
 
-    <!-- Opção avançada colapsável -->
-    <details style="margin-top:16px">
-      <summary style="font:500 13px var(--mono);color:var(--fg-dim);cursor:pointer;padding:8px 0">Opção avançada: comando manual</summary>
-      <div class="install-box" style="margin-top:12px">
-        <div style="display:flex;gap:8px;margin-bottom:16px">
-          <button class="os-tab active" id="tabMac" onclick="switchOS('mac')">Mac</button>
-          <button class="os-tab" id="tabWin" onclick="switchOS('win')">Windows</button>
+      <div class="ill-step" style="margin-top:28px">
+        <div class="ill-head"><span class="bn">1</span><div><strong>Copie o texto de instalação</strong><br><span class="sub">Clique no botão laranja. Nada vai acontecer na tela, mas o texto já foi copiado.</span></div></div>
+        <button class="download-btn" id="copyBtnPrompt" onclick="copyPrompt()">📋 Copiar texto de instalação</button>
+      </div>
+
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">2</span><div><strong>Abra o app do Claude e clique em "Code"</strong><br><span class="sub">É o ícone do Claude que você instalou. No alto da janela, clique no botão <b>Code</b>, no canto de cima à esquerda.</span></div></div>
+        <div class="shot"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjgAAAC6CAYAAACjkjcMAAAMS2lDQ1BJQ0MgUHJvZmlsZQAASImVVwdYU8kWnltSIQQIREBK6E0QkRJASggtgPQiiEpIAoQSY0JQsaOLCq5dRLCiqyCKHRCxYV9ZFLtrWSyoKOtiwa68CQF02Ve+d75v7v3vP2f+OefcuWUAoLfzpdIcVBOAXEmeLCbYnzUuKZlFeg7IwACoAQSw+AK5lBMVFQ6gDZz/bu9uQD9oVx2UWv/s/6+mJRTJBQAgURCnCeWCXIgPAoA3CaSyPACIUsibT82TKvFqiHVkMECIq5Q4Q4WblDhNhS/3+cTFcCF+DABZnc+XZQCg0Q15Vr4gA+rQYbbASSIUSyD2g9gnN3eyEOK5ENtAHzgnXanPTvtBJ+NvmmmDmnx+xiBW5dJn5ACxXJrDn/5/luN/W26OYmAOa9jUM2UhMcqcYd0eZ08OU2J1iD9I0iIiIdYGAMXFwj5/JWZmKkLiVf6ojUDOhTUDTIjHyHNief18jJAfEAaxIcTpkpyI8H6fwnRxkNIH1g8tE+fx4iDWg7hKJA+M7fc5IZscMzDvjXQZl9PPP+PL+mJQ6n9TZMdzVPqYdqaI16+PORZkxiVCTIU4IF+cEAGxBsQR8uzYsH6flIJMbsSAj0wRo8zFAmKZSBLsr9LHStNlQTH9/jtz5QO5YycyxbyIfnwlLzMuRFUr7LGA3xc/zAXrFkk48QM6Ivm48IFchKKAQFXuOFkkiY9V8bieNM8/RjUWt5PmRPX74/6inGAlbwZxnDw/dmBsfh5cnCp9vEiaFxWnihMvz+KHRqniwfeCcMAFAYAFFLClgckgC4hbu+q74JWqJwjwgQxkABFw6GcGRiT29UjgMRYUgD8hEgH54Dj/vl4RyIf81yGskhMPcqqjA0jv71OqZIMnEOeCMJADrxV9SpLBCBLAY8iI/xERHzYBzCEHNmX/v+cH2O8MBzLh/YxiYEYWfcCTGEgMIIYQg4i2uAHug3vh4fDoB5szzsY9BvL47k94QmgjPCRcJ7QTbk8SF8qGRDkWtEP9oP76pP1YH9wKarri/rg3VIfKOBM3AA64C5yHg/vCmV0hy+2PW1kV1hDtv2Xwwx3q96M4UVDKMIofxWboSA07DddBFWWtf6yPKta0wXpzB3uGzs/9ofpCeA4b6oktwg5g57CT2AWsCasHLOw41oC1YEeVeHDFPe5bcQOzxfTFkw11hq6Z73dWWUm5U41Tp9MXVV+eaFqe8mHkTpZOl4kzMvNYHPjFELF4EoHjCJazk7MbAMrvj+r19ia677uCMFu+c/P/AMD7eG9v75HvXOhxAPa5w1fC4e+cDRt+WtQAOH9YoJDlqzhceSDANwcdPn36wBiYAxuYjzNwA17ADwSCUBAJ4kASmAijz4TrXAamgplgHigCJWA5WAPKwSawFVSB3WA/qAdN4CQ4Cy6Cy+A6uANXTwd4AbrBO/AZQRASQkMYiD5iglgi9ogzwkZ8kEAkHIlBkpBUJAORIApkJjIfKUFWIuXIFqQa2YccRk4iF5A25DbyAOlEXiOfUAxVR3VQI9QKHYmyUQ4ahsahE9AMdApagC5Al6JlaCW6C61DT6IX0etoO/oC7cEApoYxMVPMAWNjXCwSS8bSMRk2GyvGSrFKrBZrhPf5KtaOdWEfcSLOwFm4A1zBIXg8LsCn4LPxJXg5XoXX4afxq/gDvBv/RqARDAn2BE8CjzCOkEGYSigilBK2Ew4RzsBnqYPwjkgkMonWRHf4LCYRs4gziEuIG4h7iCeIbcRHxB4SiaRPsid5kyJJfFIeqYi0jrSLdJx0hdRB+kBWI5uQnclB5GSyhFxILiXvJB8jXyE/JX+maFIsKZ6USIqQMp2yjLKN0ki5ROmgfKZqUa2p3tQ4ahZ1HrWMWks9Q71LfaOmpmam5qEWrSZWm6tWprZX7bzaA7WP6trqdupc9RR1hfpS9R3qJ9Rvq7+h0WhWND9aMi2PtpRWTTtFu0/7oMHQcNTgaQg15mhUaNRpXNF4SafQLekc+kR6Ab2UfoB+id6lSdG00uRq8jVna1ZoHta8qdmjxdAapRWplau1RGun1gWtZ9okbSvtQG2h9gLtrdqntB8xMIY5g8sQMOYztjHOMDp0iDrWOjydLJ0Snd06rTrdutq6LroJutN0K3SP6rYzMaYVk8fMYS5j7mfeYH4aZjSMM0w0bPGw2mFXhr3XG67npyfSK9bbo3dd75M+Sz9QP1t/hX69/j0D3MDOINpgqsFGgzMGXcN1hnsNFwwvHr5/+O+GqKGdYYzhDMOthi2GPUbGRsFGUqN1RqeMuoyZxn7GWcarjY8Zd5owTHxMxCarTY6bPGfpsjisHFYZ6zSr29TQNMRUYbrFtNX0s5m1WbxZodkes3vmVHO2ebr5avNm824LE4uxFjMtaix+t6RYsi0zLddanrN8b2VtlWi10Kre6pm1njXPusC6xvquDc3G12aKTaXNNVuiLds223aD7WU71M7VLtOuwu6SPWrvZi+232DfNoIwwmOEZETliJsO6g4ch3yHGocHjkzHcMdCx3rHlyMtRiaPXDHy3MhvTq5OOU7bnO6M0h4VOqpwVOOo1852zgLnCudro2mjg0bPGd0w+pWLvYvIZaPLLVeG61jXha7Nrl/d3N1kbrVune4W7qnu691vsnXYUewl7PMeBA9/jzkeTR4fPd088zz3e/7l5eCV7bXT69kY6zGiMdvGPPI28+Z7b/Fu92H5pPps9mn3NfXl+1b6PvQz9xP6bfd7yrHlZHF2cV76O/nL/A/5v+d6cmdxTwRgAcEBxQGtgdqB8YHlgfeDzIIygmqCuoNdg2cEnwghhISFrAi5yTPiCXjVvO5Q99BZoafD1MNiw8rDHobbhcvCG8eiY0PHrhp7N8IyQhJRHwkieZGrIu9FWUdNiToSTYyOiq6IfhIzKmZmzLlYRuyk2J2x7+L845bF3Ym3iVfENyfQE1ISqhPeJwYkrkxsHzdy3KxxF5MMksRJDcmk5ITk7ck94wPHrxnfkeKaUpRyY4L1hGkTLkw0mJgz8egk+iT+pAOphNTE1J2pX/iR/Ep+TxovbX1at4ArWCt4IfQTrhZ2irxFK0VP073TV6Y/y/DOWJXRmembWZrZJeaKy8WvskKyNmW9z47M3pHdm5OYsyeXnJuae1iiLcmWnJ5sPHna5DapvbRI2j7Fc8qaKd2yMNl2OSKfIG/I04E/+i0KG8VPigf5PvkV+R+mJkw9ME1rmmRay3S76YunPy0IKvhlBj5DMKN5punMeTMfzOLM2jIbmZ02u3mO+ZwFczrmBs+tmkedlz3vt0KnwpWFb+cnzm9cYLRg7oJHPwX/VFOkUSQrurnQa+GmRfgi8aLWxaMXr1v8rVhY/GuJU0lpyZclgiW//jzq57Kfe5emL21d5rZs43LicsnyGyt8V1St1FpZsPLRqrGr6lazVhevfrtm0poLpS6lm9ZS1yrWtpeFlzWss1i3fN2X8szy6xX+FXvWG65fvP79BuGGKxv9NtZuMtpUsunTZvHmW1uCt9RVWlWWbiVuzd/6ZFvCtnO/sH+p3m6wvWT71x2SHe1VMVWnq92rq3ca7lxWg9Yoajp3pey6vDtgd0OtQ+2WPcw9JXvBXsXe5/tS993YH7a/+QD7QO1By4PrDzEOFdchddPruusz69sbkhraDocebm70ajx0xPHIjibTpoqjukeXHaMeW3Cs93jB8Z4T0hNdJzNOPmqe1Hzn1LhT105Hn249E3bm/Nmgs6fOcc4dP+99vumC54XDv7J/rb/odrGuxbXl0G+uvx1qdWutu+R+qeGyx+XGtjFtx674Xjl5NeDq2Wu8axevR1xvuxF/49bNlJvtt4S3nt3Ouf3q9/zfP9+Ze5dwt/ie5r3S+4b3K/+w/WNPu1v70QcBD1oexj6880jw6MVj+eMvHQue0J6UPjV5Wv3M+VlTZ1Dn5efjn3e8kL743FX0p9af61/avDz4l99fLd3jujteyV71vl7yRv/Njrcub5t7onruv8t99/l98Qf9D1Uf2R/PfUr89PTz1C+kL2Vfbb82fgv7drc3t7dXypfx+34FMKDc2qQD8HoHALQkABhw30gdr9of9hmi2tP2IfCfsGoP2Wfwz6UW/tNHd8G/m5sA7N0GgBXUp6cAEEUDIM4DoKNHD7aBvVzfvlNpRLg32Bz7NS03DfwbU+1Jf4h76BkoVV3A0PO/AJHtgwdSgbcBAAAABGNJQ1AMDQABbgPj7wAAAIplWElmTU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAIdpAAQAAAABAAAATgAAAAAAAACQAAAAAQAAAJAAAAABAAOShgAHAAAAEgAAAHigAgAEAAAAAQAAAjigAwAEAAAAAQAAALoAAAAAQVNDSUkAAABTY3JlZW5zaG9005kyegAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAdZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDYuMC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iPgogICAgICAgICA8ZXhpZjpQaXhlbFlEaW1lbnNpb24+MTg2PC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgICAgPGV4aWY6UGl4ZWxYRGltZW5zaW9uPjU2ODwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlVzZXJDb21tZW50PlNjcmVlbnNob3Q8L2V4aWY6VXNlckNvbW1lbnQ+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgolTqhnAAAAHGlET1QAAAACAAAAAAAAAF0AAAAoAAAAXQAAAF0AACAiYN4gkwAAH+5JREFUeAHsnQnYFVUZxw9pJloYkBuGWS4PiYqalVtqWrmVmluUgmZiuaS5gQYqWqKVZu5Sj4JippRamrnvFri3uWSLkrkhioIIgkv8Dr7Xc4eZe+d+98z97tzv/z7P98125syZ/8yd8z/vdnq9s1CcRAgIASEgBISAEBACHYRALxGcDnqauhUhIASEgBAQAkLAIyCCoxdBCAgBISAEhIAQ6DgERHA67pHqhoSAEBACQkAICAERHL0DQkAICAEhIASEQMchIILTcY9UNyQEhIAQEAJCQAiI4OgdEAJCQAgIASEgBDoOARGcjnukuiEhIASEgBAQAkJABEfvgBAQAkJACAgBIdBxCIjgdNwj1Q0JASEgBISAEBACvaY9PU2ZjPUeCAEhIASEgBAQAh2FgAhORz1O3YwQEAJCQAgIASEAAr3mz58vDY7eBSEgBISAEBACQqCUCLz44ou+3QMGDKhqvwhOFRzaEAJCQAgIASEgBMqEgAhOmZ6W2ioEhIAQEAJCQAjkQkAEJxdMKiQEhIAQEAJCQAiUCQERnDI9LbVVCAgBISAEhIAQyIWACE4umFRICAgBISAEhIAQKBMCIjhlelpqqxAQAkJACAgBIZALARGcXDCpkBAQAkJACAgBIVAmBERwyvS01FYhIASEgBAQAkIgFwIiOLlgUiEhIASEgBAQAkKgTAiI4JTpaamtQkAICAEhIASEQC4ERHBywaRCQkAICAEhIASEQJkQEMEp09NSW4WAEBACQkAICIFcCIjg5IJJhYSAEBACQkAICIEyISCCU6anpbYKASEgBISAEBACuRAQwckFkwoJASEgBISAEBACZUJABKdMT0ttFQJCQAh0OALz5893b7zxhluwYIF788033TvvvFPKO+7Vq5fjb4kllqj8lfJGIjUaLN73vvf5vyWXXNJjEqnqzGpEcDKh0QEhIASEgBBoFQKvv/664++tt95q1SVbeh06+Pe///3+r6UXbtOLQXaKxkMEp00fvpolBISAEOgJCKClmTVrltfYcL+M7nv37u2WXnppv44GpIwCUePe5s2b5+bOnevXuQ869g984AN+Wcb7it1mnm9ReIjgxH5aqk8ICAEhIARyIUDn/+qrr/qyEJs+ffq4ZZZZJte5ZSuEdgoiB+lB6NS5Z8kiBIzQxsRDBCcmmqpLCAgBISAEciEQkptll13W9e3bN9d5ZS80c+ZMN2fOHH8bIjnVTzM2yRHBqcZXW0JACAgBIVAwAmgxXnrpJX+VD33oQ2655ZYr+IrtVT1aq9mzZ/tGYY7DbCVZhAAavFh4iODorRICQkAICIGWIvDyyy97n5uepLlJAmyaHDpzSI5kEQL45MTCQwRHb5UQEAJCQAi0DAF8UdBe4H+y0kortey67Xih559/3vvkLLXUUoquCh4QpjsirJoVEZxmEdT5QkAICAEhkBuBGTNm+FDwfv36daxDcV4wIHtoswgh71Tn6rxYhOXQasXAQwQnRFXrQkAICAEhUBgCJPHDNCPtzXsQmxYHB9uyhsS/dzfx1jBTNYuHCE6859GtNTEquuaaa9y//vUvN27cuG5tSzteHIfG3/3ud8KnHR+O2tRjEMA0hdaiJzoWZz1kczjGJIOpSrIIAfDAVNWMiOA0g16D55JyHCLyzDPPuGeffdbboVdeeWW3yiqrOJZdUcn997//dePHj3e//OUvKynNp02b1mDLOrf4008/7fH51a9+Vck/IXw693nrztobAXMuXn755ZvuvNr7TvO3jmkp6IjlbFyNWQxnYxGcakyjbxEOefPNN7vLLrvMTZkypZKtM+1ChEpCdtZff3237bbbus022yzT0erRRx915513nrvuuuvc22+/XVWdOnDnHnvsMXf++ee7a6+9VvhUvR3aEALdh8D06dP9QIwBXbPmhzx38c9//tPdeOON7q677vIDS7v+Rz7yEbfqqqu6LbbYwn3pS19ya621Vp7qCilDxuPnnntOfjgJ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V3Hdy+T+QeAccMABYeLEiT5EeY0JbLPNNuH888/PEzgIGvng1PhF6HIiIAIiIAKNScAFTHx33pbMETa0sRR8k002iYeoXAcCkydPtiXkCJuZM2faHbgFhzaSfHAMg36IgAiIgAi0NwIuYvy547qXyf3z3XffmWPxGWec4UOU14nA0UcfbQ7HCyywQGCKClEjgVOnl6HLioAIiIAINBYBFzF+V15P5lhv/LPjjjsGfECU6ksAH6hrr73Wpqk++eQTEzjxFBWCRxac+r4jXV0EREAERKAOBFzE+KXjupc9d3GDBWfttdfOBZbzscprT4CIx0899VTAgiOBU3v+uqIIiIAIiECDEnDx4rcX1yl7nTwWOMsvv7wPUV5nAu+8806ewImnqGTBqfPL0eVFQAREQARqT8DFS3xlb0vLEThYb8glcGJq9S0jcAj2N2vWLPng1PdV6OoiIAIiIAKNQMBFjN9LXPcyefxB4Hz77behT58+Pqzd5b5NAiwaIb311lthwQUXzAkc98HRKqpGeDu6BxEQAREQgZoTcBHjF47rLmo4RhmrDakWAqdbt27m47PKKquEFVZYIXz44YcWVPDpp58Ob775pt1HPX9wHwTYGzlyZHjwwQfreSt27Vjg0MAUVU7cyMm47u9HNyACIiACIlBjArGg4dJeT8vd/8anqaphwVl00UXDoYceGg477LCwyCKLzEeDa7NT+bhx48ILL7ww3/FaNTSiwHEnY6xLEji1+k3QdURABERABBqSgAsZvzmvp+WxwGGKqm/fvj6sIvnKK68c7rjjjrD00kvb+d54443w5JNPmpDp1atXWHXVVcN6660XFl544fDVV1+F7bffPtx///0VuXapJ2k0gYNViykqVlFVVODw0oHN55tvvsk5YJUKTP1FQAREQAREoJYEXMj4Nb3uOe1ejgUO01Q//vGPfVjZOdNQd999d0DIMB213377hXvuuWe+8zJlxdYE66+/fpg3b17YYostwhNPPDFfv2o3tAaBAwNbQdWSKSrEzNy5cw1ytWHq/CIgAiIgAiJQaQIuXvy8Xvecdsr+cZFTSYHDl/DUqVPNQoNw2HbbbU3k+D0lcywVjz/+uPnA3H777YGAg7VOjS5wYidjEzml7CY+e/bsMGfOnFoz1fVEQAREQAREoGIEYiHDSb3uubdRR9x4XkmBs9VWW4WrrrrK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uLimqdJegdpEQAREQAREQARKJVBoeopz1VTg4GTs68pLfRD1FwEREAEREAEREAEngHNxoQ2naypwuKnZs2eHOXPm+P0pFwEREAEREAEREIGSCCy66KKha9euBcfUXOBwN1oyXvCd6KAIiIAIiIAIiEAGgUJLw+MhdRE4TFXNnDlTgf/iN6GyCIiACIiACIhAQQI4FPfo0aPg1JSfoC4Ch4t//fXX4ZNPPpHI8TehXAREQAREQAREIJMA4maJJZYICy+8cGaf+EDdBA43gSWHlVWKcBy/EpVFQAREQAREQARiAkxLdevWrSjLjY+rq8Dxm5DjsZNQLgIiIAIiIAIiEBMoxqE47u/lhhA43AxWnLlz52o7B38zykVABERABESgHRMgzs0iiyxSktUmxtUwAsdviojHX331lX0QPd999538dByOchEQAREQARFogwTwr1lggQVMzHTs2DHwyYpQXOzjN5zAKfbG1U8EREAEREAEREAEsghI4GSRUbsIiIAIiIAIiECrJSCB02pfnW5cBERABERABEQgi4AEThYZtYuACIiACIiACLRaAi0RON9//33ueX3vzOWWWy7XRqFDUyC///XKO6SKCIiACIiACIiACFSXQCkCB2EzatSoQO4fBE6HDh0CAoecD0kCp7rvTWcXAREQAREQAREoQKBUgTNy5Ehbuc3qrc6dO9uOCzNmzAi9evWyFV60m9CRBacAdR0SAREQAREQARGoKoFiBY5bbLbYYgsTNURMdmsN4WrYWool7AsuuKDlsuBU9bXp5CIgAiIgAiIgAoUIlCJwiME3fPjw8OWXX4all17aTvvmm2+Gvn37mlVn3rx5JnDYMkICpxB1HRMBERABERABEagqgVIEDkGFhw4dajsq9O7d2+5rscUWC5MmTQqDBw82kTNnzhzb6FMCp6qvTScXAREQAREQAREoRKAUgfPtt9+GzTbbLHz++eehX79+dlqmqdgH68477wwbbbRRTuRI4BSirmMiIAIiIAIiIAJVJVCqwBkyZEj47LPPwoABA+y+3A8nKXIkcKr62nRyERABERABERCBQgRKFTibbrqpCZyVV17ZTusCh4pPV2HJ+T82NLQdi3BFPQAAAABJRU5ErkJggg==" alt="Canto de cima do app do Claude, com o botão Code (símbolo &lt;/&gt;) ao lado do ícone de conversa"><div class="shot-cap">Procure o botão com o símbolo <b>&lt;/&gt;</b>, no canto de cima à esquerda. Ele se chama <b>Code</b>. Clique nele.</div></div>
+      </div>
+
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">3</span><div><strong>Cole o texto e aperte Enter</strong><br><span class="sub">Clique no campo de escrever, cole e envie.</span></div></div>
+        <div class="keys"><span class="key">⌘ cmd</span><span class="plus">+</span><span class="key">V</span><span class="plus">depois</span><span class="key wide">Enter ⏎</span></div>
+        <div class="hint" style="margin:0 0 12px 48px">No Windows, cole com <b>Ctrl + V</b>.</div>
+        <div class="mock-app">
+          <div class="app-bar"><i class="d r"></i><i class="d y"></i><i class="d g"></i></div>
+          <div class="app-input"><span class="paste-line">Instale o Jarvis (Gringa Ads Academy) no meu computador. Eu não sei nada de computador, então fale comigo em português bem simples…</span><span class="send">↑</span></div>
         </div>
-        <div id="installMac">
-          <div class="install-label">Cole no Terminal e aperte Enter</div>
-          <div class="install-cmd" id="cmdMac">
-            <button class="copy-btn" id="copyBtnMac" onclick="copyCmd('mac')">COPIAR</button>
-            <span class="sel">/bin/bash</span> -c "<span class="sel">$(</span>curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh<span class="sel">)</span>"
-          </div>
-        </div>
-        <div id="installWin" style="display:none">
-          <div class="install-label">Cole no PowerShell e aperte Enter</div>
-          <div class="install-cmd" id="cmdWin">
-            <button class="copy-btn" id="copyBtnWin" onclick="copyCmd('win')">COPIAR</button>
-            irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex
+      </div>
+
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">4</span><div><strong>Responda o seu nome</strong><br><span class="sub">O Claude vai perguntar como você se chama. Escreva e envie.</span></div></div>
+        <div class="mock-app">
+          <div class="app-bar"><i class="d r"></i><i class="d y"></i><i class="d g"></i></div>
+          <div class="app-chat">
+            <div class="bub ai">Prazer! Qual é o seu nome?</div>
+            <div class="bub me">Hanna</div>
           </div>
         </div>
       </div>
-    </details>
+
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">5</span><div><strong>Se pedir permissão, clique em "Permitir"</strong><br><span class="sub">O Claude vai pedir autorização para instalar. Pode permitir. Depois é só esperar uns 2 minutos, ele conta o que está fazendo.</span></div></div>
+        <div class="mock-app">
+          <div class="app-bar"><i class="d r"></i><i class="d y"></i><i class="d g"></i></div>
+          <div class="perm"><div class="perm-t">O Claude quer executar um comando</div><div class="perm-b"><span class="pbtn no">Negar</span><span class="pbtn yes">Permitir ← clique aqui</span></div></div>
+        </div>
+      </div>
+
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">6</span><div><strong>Pronto! Abra o painel no Chrome</strong><br><span class="sub">Quando o Claude avisar que terminou, abra o Google Chrome, escreva isto na barra de cima e aperte Enter:</span></div></div>
+        <div class="mock-chrome">
+          <div class="chrome-tabs"><i class="d r"></i><i class="d y"></i><i class="d g"></i><span class="tab">Jarvis</span></div>
+          <div class="chrome-bar"><span class="url">🔒 localhost:4848<span class="caret"></span></span></div>
+          <div class="chrome-body">🟠 <b>J.A.R.V.I.S.</b> · seu escritório de agentes</div>
+        </div>
+      </div>
+
+      <div class="install-note" style="text-align:center">Travou em alguma tela? Tire um print e mande no grupo da mentoria.</div>
+
+      <details style="margin-top:20px">
+        <summary style="font:500 13px var(--mono);color:var(--fg-dim);cursor:pointer;padding:8px 0">Opção avançada: instalar pelo Terminal</summary>
+        <div style="margin-top:12px">
+          <div class="install-label">Mac (cole no Terminal)</div>
+          <div class="install-cmd" id="cmdMac"><button class="copy-btn" id="copyBtnMac" onclick="copyCmd('mac')">COPIAR</button>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh)"</div>
+          <div class="install-label" style="margin-top:16px">Windows (cole no PowerShell)</div>
+          <div class="install-cmd" id="cmdWin"><button class="copy-btn" id="copyBtnWin" onclick="copyCmd('win')">COPIAR</button>irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex</div>
+        </div>
+      </details>
+    </div>
   </div>
 
-  <!-- Passo a passo -->
+  <!-- Conexões -->
+  <div class="section" id="conexoes">
+    <div class="section-label">Conecte a Ratoeira, a Hostinger e o e-mail</div>
+    <div class="install-box">
+      <div class="calm">🔌 <strong>Obrigatório para o sistema funcionar de verdade.</strong> A <strong>Ratoeira Ads</strong> mede suas vendas, a <strong>Hostinger</strong> é onde suas páginas ficam no ar e o <strong>e-mail</strong> deixa o agente de Lançamentos pedir afiliação por você. Você só faz isso <strong>uma vez</strong>. Na primeira conversa o Jarvis também vai te lembrar e te guiar.</div>
+
+      <h3 class="conn-title">A) Ratoeira Ads <span class="optional-tag" style="margin-left:8px">3 minutos</span></h3>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">1</span><div><strong>Abra os Conectores do Claude</strong><br><span class="sub">No app do Claude, abra <b>Configurações</b> e clique em <b>Conectores</b>.</span></div></div>
+      </div>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">2</span><div><strong>Encontre "Ratoeira Ads" e clique em Conectar</strong><br><span class="sub">Entre com o e-mail e a senha da sua conta Ratoeira e clique em <b>Permitir</b>.</span></div></div>
+        <div class="mock-app">
+          <div class="app-bar"><i class="d r"></i><i class="d y"></i><i class="d g"></i></div>
+          <div class="conn-list">
+            <div class="conn-row"><span class="conn-ico">R</span><div><b>Ratoeira Ads</b><br><small>Rastreamento e vendas</small></div><span class="pbtn yes">Conectar ← clique aqui</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">3</span><div><strong>Abra uma conversa nova</strong><br><span class="sub">O Claude só enxerga a Ratoeira em conversas novas. Pronto: ela está conectada.</span></div></div>
+      </div>
+      <details class="plano-b" open>
+        <summary>🔎 Não apareceu "Ratoeira Ads" na lista? Faça assim (plano B)</summary>
+        <div class="plano-b-body">
+          <div class="sub-p">Em <b>Configurações → Conectores</b>, use o campo de busca e digite <b>ratoeira</b>. Se continuar sem aparecer, adicione pelo endereço, usando a <b>chave (token) da sua conta Ratoeira Ads</b>:</div>
+          <div class="big-step"><span class="bn">1</span><div>Clique em <b>Adicionar conector personalizado</b> (ou <b>Adicionar conector</b>) e, na janela, vá em <b>"Ou adicione um conector personalizado pela URL"</b>.</div></div>
+          <div class="big-step"><span class="bn">2</span><div>No campo <b>Nome</b>, escreva <b>Ratoeira Ads</b>. No campo de endereço, cole o texto abaixo e <b>troque SUA_CHAVE pela sua chave</b> (sem espaços):
+            <div class="install-cmd" style="margin-top:10px;padding-right:100px"><button class="copy-btn" id="copyBtnUrl" onclick="copyUrl()">COPIAR</button>https://mcp.ratoeiraads.com.br/mcp?token=SUA_CHAVE</div>
+            <div class="hint" style="margin:10px 0 0">⚠️ O endereço precisa terminar em <b>/mcp?token=</b> e a sua chave. Só <b>mcp.ratoeiraads.com.br</b> sem o resto dá erro 404. A chave é pessoal: não mande para ninguém.</div></div></div>
+          <div class="big-step"><span class="bn">3</span><div>Se a janela avisar <b>"Não foi possível verificar o servidor"</b>, tudo bem: clique em <b>Continuar</b>. Em <b>Autenticação</b>, escolha <b>Sem login</b> (a chave já está no endereço) e clique em <b>Adicionar/Salvar</b>. Depois abra uma <b>conversa nova</b>.</div></div>
+          <div class="hint" style="margin-left:0"><b>Onde pegar a chave:</b> no painel da Ratoeira Ads, menu <b>Integrações → API Keys</b> (tela "Tokens de acesso"), clique em <b>NOVO</b>, escolha o tipo <b>MCP</b>, dê o nome <b>Jarvis</b> e copie o token. Se a opção de conector personalizado não existir na sua conta, mande um print da tela de Conectores. Em conta de empresa/equipe, quem administra o Claude precisa liberar.</div>
+        </div>
+      </details>
+
+      <h3 class="conn-title" style="margin-top:36px">B) Hostinger <span class="optional-tag" style="margin-left:8px">5 minutos</span></h3>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">1</span><div><strong>Gere uma chave de acesso (token) na Hostinger</strong><br><span class="sub">Abra <a href="https://hpanel.hostinger.com" target="_blank" style="color:var(--accent)">hpanel.hostinger.com</a> e entre na sua conta. No menu do lado, clique em <b>API</b>. Depois clique em <b>Novo token</b>, escreva o nome <b>Jarvis</b>, escolha a validade mais longa e clique em <b>Gerar</b>.</span></div></div>
+        <div class="mock-app">
+          <div class="app-bar"><i class="d r"></i><i class="d y"></i><i class="d g"></i></div>
+          <div class="hp">
+            <div class="hp-side"><span>Início</span><span>Sites</span><span>Domínios</span><span class="on">API ←</span></div>
+            <div class="hp-main"><div class="pbtn yes" style="display:inline-block">+ Novo token</div><div class="hp-token">Seu token: <b>hst_••••••••••••••••••••</b></div></div>
+          </div>
+        </div>
+        <div class="hint">⚠️ O token <b>só aparece uma vez</b>. Deixe a tela aberta até colar no Claude (passo 2). Se a tela da Hostinger estiver um pouco diferente, procure a palavra <b>API</b> no menu ou no seu perfil.</div>
+      </div>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">2</span><div><strong>Peça para o Claude conectar</strong><br><span class="sub">Clique no botão laranja, abra o app do Claude no botão <b>Code</b>, cole o texto e envie. Quando ele pedir o token, <b>copie na Hostinger e cole no chat</b>.</span></div></div>
+        <button class="download-btn" id="copyBtnHost" onclick="copyHost()">📋 Copiar texto para conectar a Hostinger</button>
+      </div>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">3</span><div><strong>Feche e abra o app do Claude de novo</strong><br><span class="sub">Depois abra uma conversa nova. O Claude vai mostrar o seu domínio da Hostinger para confirmar que deu certo.</span></div></div>
+      </div>
+      <h3 class="conn-title" style="margin-top:36px">C) E-mail <span class="optional-tag" style="margin-left:8px">só para Lançamentos · 2 minutos</span></h3>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">1</span><div><strong>Conecte o Gmail do mesmo jeito da Ratoeira</strong><br><span class="sub">O agente de <b>Lançamentos</b> usa o seu e-mail para pedir afiliação aos produtores e ver as respostas. No app do Claude: <b>Configurações → Conectores</b>, procure <b>Gmail</b>, clique em <b>Conectar</b> e entre na conta que você usa no trabalho.</span></div></div>
+        <div class="mock-app">
+          <div class="app-bar"><i class="d r"></i><i class="d y"></i><i class="d g"></i></div>
+          <div class="conn-list">
+            <div class="conn-row"><span class="conn-ico" style="background:#d93025">M</span><div><b>Gmail</b><br><small>Enviar e ler e-mails</small></div><span class="pbtn yes">Conectar ← clique aqui</span></div>
+          </div>
+        </div>
+        <div class="hint">Antes de enviar, o agente sempre <b>mostra o e-mail e o destinatário</b> para você. Ele só manda pedido de afiliação de lançamento que você já aprovou. Não usa Gmail? Sem problema: ele escreve o e-mail pronto no chat e você copia e envia do seu e-mail.</div>
+      </div>
+      <h3 class="conn-title" style="margin-top:36px">D) Ratoeira: scripts de rastreamento <span class="optional-tag" style="margin-left:8px">uma vez · 5 minutos</span></h3>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">1</span><div><strong>Deixe o Jarvis criar a ratoeira de cada produto</strong><br><span class="sub">Para cada produto novo, o agente <b>entra na Ratoeira sozinho</b>, cria a ratoeira e pega o script de rastreamento da página. Para isso, ele precisa de uma configuração única. Precisa do <b>Google Chrome</b> instalado.</span></div></div>
+        <button class="download-btn" id="copyBtnRat" onclick="copyRat()">📋 Copiar texto para configurar a Ratoeira</button>
+      </div>
+      <div class="ill-step">
+        <div class="ill-head"><span class="bn">2</span><div><strong>Cole no Claude (botão Code) e siga o passo a passo</strong><br><span class="sub">O Claude vai abrir uma janela do Chrome. <b>Você entra na sua conta da Ratoeira</b> (só você digita a senha), clica em <b>Acessar</b> e <b>fecha a janela</b>. Depois ele pergunta qual é o seu projeto na Ratoeira e o nome da sua <b>ação de conversão</b> do Google Ads (tem que ser exatamente igual ao da sua conta).</span></div></div>
+        <div class="hint">🔒 A sua senha <b>não é salva</b> em lugar nenhum: o login fica só na sessão do Chrome do Jarvis, no seu computador. Se um dia pedir para entrar de novo, é só repetir.</div>
+      </div>
+      <div class="install-note" style="text-align:center">Travou? Tire um print e mande no grupo da mentoria.</div>
+    </div>
+  </div>
+
+  <!-- Como funciona -->
+  <div class="section" id="funcionamento">
+    <div class="section-label">Como o Jarvis trabalha</div>
+    <div class="install-box">
+      <div class="calm">🧭 Seus agentes seguem um <strong>funil</strong>. Você só decide <strong>duas coisas</strong>: aprovar o produto e mandar o link de afiliação. Todo o resto eles fazem sozinhos.</div>
+
+      <div class="flow">
+        <div class="flow-item"><span class="who ag">🤖 Agente</span><div><b>1. Faz o garimpo nos dias da agenda</b><br><span class="sub">Procura produtos (Nutra) ou lançamentos (Lançamentos), valida e monta uma <b>página de aprovação</b> bonita, com nome, produtor, link da página de captação, comissão e tudo que achou. Não gasta nada nem publica nada.</span></div></div>
+        <div class="flow-item"><span class="who vc">👤 Você</span><div><b>2. Aprova na página</b><br><span class="sub">O agente te dá o link da página (ou abra <b>localhost:4848/entregas</b>). Leia e clique em <b>Aprovar</b> ou <b>Não quero</b> em cada um. Pesquisou um lançamento por conta? É só contar ao agente: o que você traz já conta como aprovado.</span></div></div>
+        <div class="flow-item"><span class="who vc">👤 Você</span><div><b>3. Envia o link de afiliação</b><br><span class="sub">Na Nutra, o agente pede o seu link de afiliação depois da aprovação. Em Lançamentos, ele <b>envia o e-mail de afiliação</b> ao produtor e avisa quando a resposta chegar com o link.</span></div></div>
+        <div class="flow-item"><span class="who ag">🤖 Agente</span><div><b>4. A partir do link, faz tudo sozinho, nesta ordem:</b>
+          <ol class="flow-sub">
+            <li><b>Entra na Ratoeira sozinho</b>, cria a ratoeira do produto e pega o <b>script de rastreamento</b></li>
+            <li>Escreve a <b>copy do anúncio</b></li>
+            <li>Monta a <b>página de cookie</b> com o script da Ratoeira</li>
+            <li><b>Publica a página</b> no seu domínio da Hostinger e confere se abre</li>
+            <li>Cria a <b>campanha no Google Ads</b>, sempre <b>pausada</b></li>
+          </ol></div></div>
+        <div class="flow-item"><span class="who vc">👤 Você</span><div><b>5. Revisa e ativa a campanha</b><br><span class="sub">O agente te avisa com os links. Você confere a campanha e ativa. Ele nunca ativa por conta própria.</span></div></div>
+      </div>
+      <div class="hint" style="margin-left:0">Se faltar alguma conexão (Ratoeira, Hostinger, Google Ads ou e-mail), o agente <b>para exatamente naquele ponto</b>, te diz o que falta e te guia. Quando você resolve, ele continua de onde parou.</div>
+
+      <h3 class="conn-title" style="margin-top:36px">📅 A agenda da semana</h3>
+      <div class="sub-p">Cada agente tem dias fixos para fazer o garimpo. Esta é a agenda que vem de fábrica:</div>
+      <div class="sched">
+        <div class="sched-row head"><span>Agente</span><span>Tarefa</span><span>Quando</span></div>
+        <div class="sched-row"><span>Nutra</span><span>Garimpo de produtos</span><span>seg e qui · 09:00</span></div>
+        <div class="sched-row"><span>Lançamentos</span><span>Garimpo de lançamentos</span><span>ter e sex · 09:00</span></div>
+        <div class="sched-row"><span>Jarvis</span><span>Resumo da semana</span><span>sex · 17:00</span></div>
+      </div>
+      <div class="sub-p"><b>Você manda na agenda.</b> Para mudar, é só pedir ao Jarvis, em português, no app do Claude (botão <b>Code</b>):</div>
+      <div class="say">“Jarvis, o garimpo da Nutra agora é só na terça às 10h.”</div>
+      <div class="say">“Jarvis, adicione um garimpo de lançamentos na quarta às 14h.”</div>
+      <div class="hint" style="margin-left:0">⚠️ As rotinas só rodam com o <b>computador ligado</b> e o <b>app do Claude aberto</b>. Se estiver desligado, o Jarvis avisa quando você abrir: "Hoje era dia de garimpo, quer que eu rode agora?".</div>
+
+      <h3 class="conn-title" style="margin-top:36px">🛠️ Personalize o seu Jarvis</h3>
+      <div class="sub-p">O Jarvis é seu: você pode pedir para ele fazer outras coisas, criar rotinas novas e até <b>criar agentes novos</b>. Exemplos:</div>
+      <div class="say">“Jarvis, crie um agente novo para acompanhar meus resultados todo dia e me mandar um resumo.”</div>
+      <div class="say">“Jarvis, toda sexta me faça um relatório do que foi publicado na semana.”</div>
+      <div class="say">“Jarvis, crie um agente para pesquisar anúncios de concorrentes.”</div>
+      <div class="sub-p">O agente novo aparece no painel <b>localhost:4848</b> junto com os outros. Os agentes padrão e a regra de campanha sempre <b>pausada</b> continuam como estão.</div>
+    </div>
+  </div>
+
+  <!-- Depois de instalar -->
   <div class="section">
-    <div class="section-label">Passo a passo</div>
+    <div class="section-label">Depois de instalar</div>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-content">
-          <div class="step-title">Instale o Claude Code</div>
-          <div class="step-desc">
-            Você precisa do plano <strong>Pro</strong> ou <strong>Max</strong> da Anthropic. Baixe em <a href="https://claude.ai/download" target="_blank">claude.ai/download</a>, instale e faça login.
-            <div class="tip"><strong>Dica:</strong> O Claude Code é o app de desktop da Anthropic. Ele roda no Terminal e é o "cérebro" dos seus agentes.</div>
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <div class="step-title">Baixe e abra o instalador</div>
-          <div class="step-desc">
-            Clique no botão do seu sistema lá em cima (<strong>Mac</strong> ou <strong>Windows</strong>). Dê <strong>dois cliques</strong> no arquivo baixado. Uma tela preta vai abrir — é o instalador trabalhando. Ele vai:
-            <br>&#x2022; Instalar o Node.js (se precisar)
-            <br>&#x2022; Criar a pasta do Jarvis com tudo
-            <br>&#x2022; Perguntar seu nome
-            <br>&#x2022; Configurar o painel para abrir sozinho
-            <div class="tip"><strong>Mac:</strong> Se aparecer aviso de segurança, clique com <strong>botão direito</strong> → <strong>Abrir</strong>.<br><strong>Windows:</strong> Se aparecer "protegeu seu PC", clique em <strong>Mais informações</strong> → <strong>Executar assim mesmo</strong>.</div>
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <div class="step-title">Abra o Escritório no Chrome</div>
-          <div class="step-desc">
-            Abra o <strong>Google Chrome</strong> e acesse <code>localhost:4848</code>. Esse é o painel do Jarvis — ele mostra seus agentes em tempo real.
-            <div class="tip"><strong>Importante:</strong> Use o Chrome. A voz do Jarvis precisa dele.</div>
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-content">
           <div class="step-title">Ative um agente</div>
           <div class="step-desc">
-            No Terminal, rode um desses comandos:
-            <div class="cmd-block">cd ~/jarvis/agentes/nutra && claude</div>
-            <div class="cmd-block" style="margin-top:6px">cd ~/jarvis/agentes/lancamentos && claude</div>
-            O agente aparece no painel e você começa a trabalhar com ele.
+            No app do Claude, botão <strong>Code</strong>, escolha a pasta do agente que quer usar: <strong>Jarvis → agentes → nutra</strong> (ou <strong>lancamentos</strong>). A pasta <strong>Jarvis</strong> fica na sua pasta pessoal. Depois é só conversar com ele. O agente aparece no painel do Chrome.
+            <div class="tip"><strong>Importante:</strong> Use o <strong>Chrome</strong>. A voz do Jarvis precisa dele.</div>
           </div>
         </div>
       </div>
@@ -486,12 +721,46 @@ const cmds = {
   win: `irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex`
 };
 
-function switchOS(os) {
-  document.getElementById('installMac').style.display = os === 'mac' ? '' : 'none';
-  document.getElementById('installWin').style.display = os === 'win' ? '' : 'none';
-  document.getElementById('tabMac').classList.toggle('active', os === 'mac');
-  document.getElementById('tabWin').classList.toggle('active', os === 'win');
-  document.body.classList.toggle('os-win', os === 'win');
+const PROMPT = `Instale o Jarvis (Gringa Ads Academy) no meu computador. Eu não sei nada de computador, então fale comigo em português bem simples.
+
+1. Primeiro me pergunte qual é o meu nome.
+2. Depois descubra se o meu computador é Mac ou Windows e rode o instalador certo, colocando o meu nome no lugar de NOME:
+   - Mac: JARVIS_NOME="NOME" /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh)"
+   - Windows (PowerShell): $env:JARVIS_NOME="NOME"; irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex
+3. Se der erro, tente resolver sozinho. Só me peça algo se for realmente necessário.
+4. No final, me diga se deu certo e me ensine a abrir o painel em http://localhost:4848 no Google Chrome.
+5. Depois, leia o arquivo ~/jarvis/conexoes.md e me guie passo a passo para conectar a Ratoeira Ads, a Hostinger e configurar a criação dos scripts de rastreamento da Ratoeira.`;
+
+const RAT_PROMPT = `Quero configurar o Jarvis para criar a ratoeira de cada produto na Ratoeira Ads e pegar o script de rastreamento. Leia o arquivo ~/jarvis/conexoes.md (parte "Criar as ratoeiras pelo Jarvis") e faça comigo, passo a passo, em português simples. Eu mesmo(a) entro na minha conta da Ratoeira na janela que abrir: não me peça a senha no chat.`;
+
+const HOST_PROMPT = `Quero conectar a minha Hostinger ao Jarvis. Leia o arquivo ~/jarvis/conexoes.md (parte da Hostinger) e faça tudo o que for possível por mim. Quando precisar do meu token da Hostinger, me peça que eu colo aqui. Fale em português bem simples.`;
+
+function copyUrl() {
+  const btn = document.getElementById('copyBtnUrl'), u = 'https://mcp.ratoeiraads.com.br/mcp?token=SUA_CHAVE';
+  const ok = () => { btn.textContent = 'COPIADO'; btn.classList.add('done'); setTimeout(() => { btn.textContent = 'COPIAR'; btn.classList.remove('done'); }, 2500); };
+  const fb = () => { const ta = document.createElement('textarea'); ta.value = u; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch(e) {} document.body.removeChild(ta); };
+  try { navigator.clipboard.writeText(u).then(ok).catch(fb); } catch(e) { fb(); }
+}
+
+function copyRat() {
+  const btn = document.getElementById('copyBtnRat');
+  const ok = () => { btn.textContent = '✓ Copiado! Agora cole no Claude (botão Code)'; btn.classList.add('done'); setTimeout(() => { btn.textContent = '📋 Copiar texto para configurar a Ratoeira'; btn.classList.remove('done'); }, 4000); };
+  const fb = () => { const ta = document.createElement('textarea'); ta.value = RAT_PROMPT; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch(e) {} document.body.removeChild(ta); };
+  try { navigator.clipboard.writeText(RAT_PROMPT).then(ok).catch(fb); } catch(e) { fb(); }
+}
+
+function copyHost() {
+  const btn = document.getElementById('copyBtnHost');
+  const ok = () => { btn.textContent = '✓ Copiado! Agora cole no Claude (botão Code)'; btn.classList.add('done'); setTimeout(() => { btn.textContent = '📋 Copiar texto para conectar a Hostinger'; btn.classList.remove('done'); }, 4000); };
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = HOST_PROMPT; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch(e) {} document.body.removeChild(ta); };
+  try { navigator.clipboard.writeText(HOST_PROMPT).then(ok).catch(fallback); } catch(e) { fallback(); }
+}
+
+function copyPrompt() {
+  const btn = document.getElementById('copyBtnPrompt');
+  const ok = () => { btn.textContent = '✓ Copiado! Agora abra o app do Claude'; btn.classList.add('done'); setTimeout(() => { btn.textContent = '📋 Copiar texto de instalação'; btn.classList.remove('done'); }, 4000); };
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = PROMPT; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch(e) {} document.body.removeChild(ta); };
+  try { navigator.clipboard.writeText(PROMPT).then(ok).catch(fallback); } catch(e) { fallback(); }
 }
 
 function copyCmd(os) {
@@ -499,14 +768,14 @@ function copyCmd(os) {
   const btn = document.getElementById(os === 'mac' ? 'copyBtnMac' : 'copyBtnWin');
   try {
     navigator.clipboard.writeText(cmd).then(() => {
-      btn.textContent = 'COPIADO';
+      btn.dataset.o = btn.dataset.o || btn.textContent; btn.textContent = '✓ Copiado! Agora abra o '+(os==='mac'?'Terminal':'PowerShell');
       btn.classList.add('done');
-      setTimeout(() => { btn.textContent = 'COPIAR'; btn.classList.remove('done'); }, 2000);
+      setTimeout(() => { btn.textContent = btn.dataset.o; btn.classList.remove('done'); }, 4000);
     }).catch(() => {
       const ta = document.createElement('textarea');
       ta.value = cmd; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-      btn.textContent = 'COPIADO'; btn.classList.add('done');
-      setTimeout(() => { btn.textContent = 'COPIAR'; btn.classList.remove('done'); }, 2000);
+      btn.dataset.o = btn.dataset.o || btn.textContent; btn.textContent = '✓ Copiado! Agora abra o '+(os==='mac'?'Terminal':'PowerShell'); btn.classList.add('done');
+      setTimeout(() => { btn.textContent = btn.dataset.o; btn.classList.remove('done'); }, 4000);
     });
   } catch(e) {
     const sel = window.getSelection();
@@ -517,5 +786,5 @@ function copyCmd(os) {
 }
 
 // Detectar sistema automaticamente
-if (navigator.userAgent.indexOf('Win') !== -1) switchOS('win');
+
 </script>

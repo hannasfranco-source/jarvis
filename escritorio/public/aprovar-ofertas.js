@@ -12,15 +12,7 @@
     .aprovacao button:disabled { opacity: .6; cursor: default; }
     .aprovacao .ok { font-weight: 600; } .aprovacao .ok.verde { color: #1e7d45; } .aprovacao .ok.cinza { color: #666; }
     .aprovacao .erro { color: #c0392b; font-size: 13px; margin-top: 6px; }
-    .aprovacao-resumo { position: sticky; top: 0; z-index: 5; margin: 0 0 12px; padding: 8px 12px; border-radius: 8px; background: #1b2140; color: #fff; font: 600 14px -apple-system, Arial, sans-serif; }
-    .adicionar { margin: 18px 0; padding: 16px; border-radius: 12px; background: #eef7f1; border: 1px solid #cfe6d8; font-family: -apple-system, Arial, sans-serif; }
-    .adicionar h3 { margin: 0 0 4px; font-size: 17px; } .adicionar p { margin: 0 0 12px; color: #456; font-size: 14px; }
-    .adicionar label { display: block; font-size: 13px; font-weight: 600; margin: 10px 0 4px; }
-    .adicionar input, .adicionar textarea { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #bcd; border-radius: 8px; font: inherit; font-size: 14px; }
-    .adicionar .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } @media (max-width: 560px) { .adicionar .duas { grid-template-columns: 1fr; } }
-    .adicionar button { margin-top: 14px; width: 100%; padding: 12px; border: 0; border-radius: 8px; background: #1e9e55; color: #fff; font: 600 15px -apple-system, Arial, sans-serif; cursor: pointer; }
-    .adicionar button:disabled { opacity: .6; } .adicionar .msg { margin-top: 10px; font-weight: 600; font-size: 14px; } .adicionar .msg.erro { color: #c0392b; } .adicionar .msg.ok { color: #1e7d45; }
-    .minhas { margin: 12px 0; font: 14px -apple-system, Arial, sans-serif; } .minhas div { padding: 8px 0; border-top: 1px solid #dfe3ee; }`;
+    .aprovacao-resumo { position: sticky; top: 0; z-index: 5; margin: 0 0 12px; padding: 8px 12px; border-radius: 8px; background: #1b2140; color: #fff; font: 600 14px -apple-system, Arial, sans-serif; }`;
   document.head.appendChild(css);
   const lanc = document.body.dataset.tipo === 'lancamentos';
   let decisoes = {};
@@ -67,49 +59,6 @@
     }
   });
 
-
-  // Formulário "Achei um lançamento por conta": adicionar já é aprovar (o agente envia o e-mail de afiliação depois).
-  for (const box of document.querySelectorAll('[data-adicionar]')) {
-    box.classList.add('adicionar');
-    box.innerHTML = `<h3>➕ Achei um lançamento por conta</h3>
-      <p>Pesquisei por conta e quero pedir a afiliação. Ao enviar, o lançamento já fica aprovado e o agente de Lançamentos envia o e-mail de afiliação.</p>
-      <div class="duas"><div><label>Produtor / expert *</label><input name="produtor"></div><div><label>Nome do evento *</label><input name="evento"></div></div>
-      <label>Link da página de captação (a página de inscrição do evento)</label><input name="pagina" placeholder="https://...">
-      <div class="duas"><div><label>Datas do evento</label><input name="datas"></div><div><label>País / idioma</label><input name="pais"></div></div>
-      <div class="duas"><div><label>Gratuito ou pago</label><input name="preco"></div><div><label>Comissão (se souber)</label><input name="comissao"></div></div>
-      <label>Contato para a afiliação (e-mail) ou link do programa de afiliados</label><input name="contato">
-      <label>Recado para o agente (opcional)</label><textarea name="nota" rows="2" placeholder="Ex.: já falei com ele no Instagram, mandar o e-mail em inglês"></textarea>
-      <button type="button">✓ Adicionar e aprovar o envio do e-mail</button><div class="msg"></div>`;
-    box.querySelector('button').addEventListener('click', async (ev) => {
-      const btn = ev.currentTarget, msg = box.querySelector('.msg');
-      const dados = {};
-      box.querySelectorAll('input, textarea').forEach((i) => (dados[i.name] = i.value));
-      btn.disabled = true; msg.className = 'msg'; msg.textContent = 'Enviando…';
-      try {
-        const r = await fetch('/api/ofertas/adicionar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(dados) });
-        const j = await r.json();
-        if (!r.ok) throw new Error(j.erro || 'erro');
-        msg.className = 'msg ok'; msg.textContent = `✓ Adicionado. ${j.msg || ''}`;
-        box.querySelectorAll('input, textarea').forEach((i) => (i.value = ''));
-        listarMinhas();
-      } catch (e) {
-        msg.className = 'msg erro'; msg.textContent = `Não salvou: ${e.message}. Abra esta página por localhost:4848/entregas.`;
-      }
-      btn.disabled = false;
-    });
-  }
-  async function listarMinhas() {
-    const alvo = document.querySelector('[data-minhas]');
-    if (!alvo) return;
-    try {
-      const base = '/entregas/ofertas-lancamentos-minhas/';
-      const [o, d] = await Promise.all([fetch(base + 'ofertas.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : [])), fetch(base + 'decisoes.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : {}))]);
-      const lista = (Array.isArray(o) ? o : o.ofertas || []).slice().reverse();
-      alvo.className = 'minhas';
-      alvo.innerHTML = lista.length ? lista.map((x) => `<div><b>${esc(x.evento)}</b> — ${esc(x.produtor)}${x.pagina ? ` · <a href="${esc(x.pagina)}" target="_blank" rel="noopener">página de captação</a>` : ''}<br><small>${d[x.id]?.decisao === 'aprovar' ? 'aprovado' : 'aguardando'}</small></div>`).join('') : '<div>Nada adicionado ainda.</div>';
-    } catch {}
-  }
-  listarMinhas();
 
   fetch('decisoes.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => { decisoes = d || {}; desenhar(); });
 })();

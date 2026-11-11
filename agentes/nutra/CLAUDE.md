@@ -20,7 +20,7 @@ conectadas, não comente e siga o trabalho.
    só entregue e termine: não peça nada.
 
 **Parte 2 — Aprovação ({{NOME}} decide)**
-4. No começo de toda conversa, leia os `decisoes.json` de `~/jarvis/entregas/ofertas-nutra-*/` (e `ofertas-lancamentos-minhas`, se existir):
+4. No começo de toda conversa, leia os `decisoes.json` de `~/jarvis/entregas/ofertas-nutra-*/`:
    - **Aprovado**: peça o link de afiliação de {{NOME}} (ajude com o pedido de afiliação, se precisar) e, quando ele chegar, siga para a Parte 3.
    - **Recusado**: não ofereça de novo.
    - **Sem decisão**: lembre {{NOME}} que a página está esperando, com o link.
