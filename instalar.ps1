@@ -141,6 +141,7 @@ Copy-Item "$SCRIPT_DIR\bin\google-ads.mjs"             "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\google-ads-autorizar.mjs"   "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\google-ads-regras.json"     "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\ofertas.mjs"                 "$JARVIS_DIR\bin\" -Force
+Copy-Item "$SCRIPT_DIR\bin\ratoeira-script.mjs"         "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\conexoes.md"                    "$JARVIS_DIR\" -Force
 if (-not (Test-Path "$JARVIS_DIR\agenda.md")) { Copy-Item "$SCRIPT_DIR\agenda.md" "$JARVIS_DIR\" -Force }
 
@@ -157,8 +158,21 @@ if (-not (Test-Path "$JARVIS_DIR\agenda.md")) { Copy-Item "$SCRIPT_DIR\agenda.md
 
 @"
 @echo off
-"$env:USERPROFILE\.local\node\node.exe" "$env:USERPROFILE\jarvis\bin\ofertas.mjs" %*
+if exist "$env:USERPROFILE\.local\node\node.exe" (
+  "$env:USERPROFILE\.local\node\node.exe" "$env:USERPROFILE\jarvis\bin\ofertas.mjs" %*
+) else (
+  node "$env:USERPROFILE\jarvis\bin\ofertas.mjs" %*
+)
 "@ | Set-Content "$JARVIS_DIR\bin\ofertas.cmd" -Encoding ASCII
+
+@"
+@echo off
+if exist "$env:USERPROFILE\.local\node\node.exe" (
+  "$env:USERPROFILE\.local\node\node.exe" "$env:USERPROFILE\jarvis\bin\ratoeira-script.mjs" %*
+) else (
+  node "$env:USERPROFILE\jarvis\bin\ratoeira-script.mjs" %*
+)
+"@ | Set-Content "$JARVIS_DIR\bin\ratoeira-script.cmd" -Encoding ASCII
 
 Write-Ok "Arquivos copiados"
 

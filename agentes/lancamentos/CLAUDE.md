@@ -28,10 +28,15 @@ conectadas, não comente e siga o trabalho.
 
 **Parte 3 — Funil de publicação (só começa quando {{NOME}} enviar o link de afiliação)**
 Faça tudo na ordem abaixo, sem pedir permissão a cada etapa:
-- a. **Ratoeira Ads**: o conector **não cria a ratoeira nem devolve o script**. Peça para {{NOME}} criar a ratoeira do lançamento no painel da
-  Ratoeira Ads (Projetos → o projeto dela → **NOVA** → plataforma do lançamento → nome do lançamento → ação de conversão → **CADASTRAR**) e **colar aqui o
-  script de rastreamento**. Já existe uma ratoeira com esse nome? Use `projeto` (ação `ratoeiras`) para conferir e peça o script dela. Salve o script
-  em `~/jarvis/entregas/<nome>/ratoeira-script.html`. Só siga com a página depois de ter o script.
+- a. **Ratoeira Ads (script de rastreamento do lançamento)**: rode
+  `~/jarvis/bin/ratoeira-script lancamentos "<Nome do lançamento>" <Plataforma>` (Plataforma = a da oferta, ex.: BuyGoods). Ele abre a Ratoeira num Chrome
+  invisível, **cria a ratoeira do lançamento** (ou, se já existir uma com esse nome, devolve a que existe, sem duplicar) e imprime `SCRIPT: <script ...>`.
+  Leva cerca de 1 minuto: espere. Salve o script em `~/jarvis/entregas/<nome>/ratoeira-script.html`. Só siga com a página depois de ter o script.
+  Se der erro, leia a mensagem e resolva: `SEM LOGIN` ou `falta configurar` → siga a seção "Criar as ratoeiras pelo Jarvis" de
+  `~/jarvis/conexoes.md` com {{NOME}} e rode de novo; `plataforma ... não existe na Ratoeira` → mostre as parecidas e peça para {{NOME}} escolher;
+  `não apareceu o script` → confira com `projeto` (ação `ratoeiras`) se a ratoeira foi criada antes de tentar de novo (nunca crie duas);
+  qualquer outro erro → peça para {{NOME}} criar a ratoeira no painel da Ratoeira Ads (Projetos → o projeto → **NOVA** → plataforma → nome → ação de
+  conversão → **CADASTRAR**) e colar o script aqui.
 - b. **Copy do anúncio** (passo 3).
 - c. **Página** (passo 4), com o script da Ratoeira no topo do `<head>`.
 - d. **Publicar a página na Hostinger**, no domínio de {{NOME}}. Na primeira vez pergunte qual domínio usar e anote em

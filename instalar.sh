@@ -127,6 +127,7 @@ cp "$SCRIPT_DIR/bin/google-ads.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/google-ads-autorizar.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/google-ads-regras.json" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/ofertas.mjs" "$JARVIS_DIR/bin/"
+cp "$SCRIPT_DIR/bin/ratoeira-script.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/conexoes.md" "$JARVIS_DIR/"
 [ -f "$JARVIS_DIR/agenda.md" ] || cp "$SCRIPT_DIR/agenda.md" "$JARVIS_DIR/"
 
@@ -145,9 +146,17 @@ chmod +x "$JARVIS_DIR/bin/google-ads-autorizar"
 
 cat > "$JARVIS_DIR/bin/ofertas" << 'SCRIPT'
 #!/bin/sh
-exec "$HOME/.local/node/bin/node" "$HOME/jarvis/bin/ofertas.mjs" "$@"
+N="$HOME/.local/node/bin/node"; [ -x "$N" ] || N="$(command -v node)"
+exec "$N" "$HOME/jarvis/bin/ofertas.mjs" "$@"
 SCRIPT
 chmod +x "$JARVIS_DIR/bin/ofertas"
+
+cat > "$JARVIS_DIR/bin/ratoeira-script" << 'SCRIPT'
+#!/bin/sh
+N="$HOME/.local/node/bin/node"; [ -x "$N" ] || N="$(command -v node)"
+exec "$N" "$HOME/jarvis/bin/ratoeira-script.mjs" "$@"
+SCRIPT
+chmod +x "$JARVIS_DIR/bin/ratoeira-script"
 
 ok "Arquivos copiados"
 

@@ -7,7 +7,8 @@ diga exatamente onde clicar e espere a confirmação antes de ir ao próximo pas
 No começo de toda conversa nova (uma vez só, antes de começar qualquer trabalho), confira:
 1. **Ratoeira Ads**: existem ferramentas do conector "Ratoeira Ads" (nomes com `ratoeira`, como `get_cliente_me`)?
 2. **Hostinger**: existem ferramentas do servidor "hostinger" (hospedagem, domínios, sites)?
-3. **E-mail** (só para o agente de Lançamentos): existem ferramentas do conector Gmail (como `search_threads`, `create_draft`, `send_message`)?
+3. **Ratoeira (script por produto)**: o arquivo `~/jarvis/ratoeira.json` existe e tem a frente do agente (`nutra` ou `lancamentos`)? Se não, ofereça configurar (seção "Criar as ratoeiras pelo Jarvis").
+4. **E-mail** (só para o agente de Lançamentos): existem ferramentas do conector Gmail (como `search_threads`, `create_draft`, `send_message`)?
 
 Se faltar alguma, avise de forma curta e amigável: "Antes de trabalharmos, falta conectar a [Ratoeira / Hostinger].
 Sem isso eu não consigo [rastrear as vendas / publicar suas páginas]. Quer que eu te guie agora? Leva uns 3 minutos."
@@ -62,6 +63,20 @@ Regras do token:
 - Nunca repita o token de volta no chat e nunca salve em arquivo de anotações, relatório ou entrega. Ele só vai na configuração do servidor.
 - Se {{NOME}} colar o token por engano em outro lugar, avise para gerar um novo e apagar o antigo na Hostinger.
 
+## Criar as ratoeiras pelo Jarvis (uma vez, por frente)
+O comando `~/jarvis/bin/ratoeira-script` abre a Ratoeira Ads num Chrome invisível e cria a ratoeira de cada produto, devolvendo o script de
+rastreamento. A senha de {{NOME}} **não é guardada**: o login fica na sessão do Chrome do Jarvis. Precisa do **Google Chrome** instalado.
+Configure uma vez (Windows: `ratoeira-script.cmd`, no mesmo caminho `~/jarvis/bin`):
+1. **Login**: rode `~/jarvis/bin/ratoeira-script login`. Abre uma janela do Chrome. Peça a {{NOME}} para entrar na conta da Ratoeira (e-mail e senha
+   dela, só ela digita), clicar em **Acessar** na Ratoeira Ads e **fechar essa janela do Chrome**. Nunca peça a senha no chat.
+2. **Projeto**: pergunte em qual projeto da Ratoeira ficam as ratoeiras dessa frente (Nutra ou Lançamentos). Pegue o número (id) dele: se o conector da
+   Ratoeira estiver ligado, use `projeto` (ação `list`); se não, peça a {{NOME}} para abrir o projeto na Ratoeira e ler o número no endereço
+   (`app.ratoeiraads.com.br/v2/projetos/NÚMERO/ratoeiras`). Se {{NOME}} ainda não tem projeto, ela cria um na Ratoeira (ou peça confirmação e crie com `projeto_action`).
+3. **Ação de conversão**: pergunte o nome da ação de conversão do Google Ads usada nas campanhas dela. Tem que ser **exatamente igual** ao da conta do Google Ads.
+4. Salve: `~/jarvis/bin/ratoeira-script configurar <nutra|lancamentos> --projeto "<nome>" --id <número> --acao "<ação de conversão>"`.
+5. Teste sem cadastrar nada: `~/jarvis/bin/ratoeira-script <frente> "TESTE" <Plataforma> --ensaio`. Deve responder "ENSAIO: formulário certo, não cadastrei".
+Se depois de um tempo aparecer `SEM LOGIN`, é só repetir o passo 1.
+
 ## Conectar o e-mail (agente de Lançamentos)
 O Lançamentos precisa de um e-mail para pedir afiliação aos produtores. Recomende o **Gmail** (conector pronto do Claude):
 1. No app do Claude, abrir **Configurações → Conectores** (ou **Personalizar → Conectores**).
@@ -78,7 +93,7 @@ Se {{NOME}} não usa Gmail (Outlook, Hotmail, e-mail do domínio): sem problema.
 ## Regras ao usar as conexões
 - Publicar página: confirme com {{NOME}} o domínio e o endereço (slug) antes. Nunca sobrescreva uma página que já existe
   sem perguntar.
-- O script de rastreamento da Ratoeira vai no topo do `<head>` de toda página que você criar. O conector Ratoeira Ads **não cria a
-  ratoeira nem devolve o script**: {{NOME}} cria a ratoeira no painel da Ratoeira e cola o script aqui. Use o conector para listar
-  projetos e ratoeiras, conferir tags e acompanhar vendas, custo e lucro.
+- O script de rastreamento da Ratoeira vai no topo do `<head>` de toda página que você criar. Quem cria a ratoeira e pega o script é o
+  comando `~/jarvis/bin/ratoeira-script` (seção abaixo), não o conector. Use o conector para listar projetos e ratoeiras, conferir tags e
+  acompanhar vendas, custo e lucro.
 - Nunca mexa em cobrança, planos, domínios ou e-mails da Hostinger. Só publicação de páginas.
