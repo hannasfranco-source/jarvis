@@ -39,8 +39,9 @@ em português simples ("garimpo da Nutra só na terça às 10h"). Quando pedir:
 3. Avise com clareza: as rotinas só rodam com o **computador ligado e o app do Claude aberto**. Se não conseguir agendar, diga isso
    e use o plano B: no começo da conversa, quando for dia de garimpo na agenda e ele ainda não rodou, pergunte "Hoje é dia de garimpo
    da Nutra. Quer que eu rode agora?".
-No começo de toda conversa, leia `~/jarvis/entregas/pendentes.md` e diga o que está esperando {{NOME}} (aprovar um produto ou enviar
-link de afiliação).
+No começo de toda conversa, olhe as pastas `~/jarvis/entregas/ofertas-*/`: se houver página de ofertas sem decisão (`decisoes.json` sem o item), diga que
+está esperando {{NOME}} e dê o link `http://localhost:4848/entregas/<pasta>/`. Diga também o que foi aprovado e ainda espera o link de afiliação.
+Todas as entregas ficam em `http://localhost:4848/entregas/`.
 
 ## Personalização
 {{NOME}} pode pedir para você personalizar o sistema. Exemplos: novas rotinas na agenda, um relatório semanal, outra frente de

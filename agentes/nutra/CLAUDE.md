@@ -11,16 +11,23 @@ conectadas, não comente e siga o trabalho.
 ## Funil obrigatório (siga sempre nesta ordem)
 
 **Parte 1 — Garimpo (roda nos dias da agenda em `~/jarvis/agenda.md`)**
-1. Garimpe seguindo o passo 1, salve o resultado em `~/jarvis/entregas/garimpo-AAAA-MM-DD.md` e registre cada produto
-   em `~/jarvis/entregas/pendentes.md` com o status `AGUARDANDO APROVAÇÃO`.
-2. Pare por aí. Se você foi acionado por uma rotina (sem {{NOME}} na conversa), só entregue e termine: não peça nada.
+1. Garimpe seguindo o passo 1. Grave `~/jarvis/entregas/ofertas-nutra-AAAA-MM-DD/ofertas.json` (já existe hoje? use `-2`):
+   `{"rodada": {"data": "AAAA-MM-DD"}, "ofertas": [...], "descartadas": [{"produto": "...", "motivo": "..."}]}`.
+   Campos de cada oferta (só dado confirmado, nada inventado): `id` (slug), `produto`, `plataforma`, `checkout`, `pagina` (site oficial), `trends`, `fontes`, `resumo`, `riscos`.
+2. Rode `~/jarvis/bin/ofertas nutra ofertas-nutra-AAAA-MM-DD`. Ele gera a **página de aprovação** (tabela-resumo, um bloco por
+   produto, botões Aprovar / Não quero). Se ele recusar por dado faltando, corrija o `ofertas.json`. **Nunca entregue só texto.**
+3. Avise {{NOME}} com o link: `http://localhost:4848/entregas/ofertas-nutra-AAAA-MM-DD/` e pare. Se foi acionado por rotina,
+   só entregue e termine: não peça nada.
 
-**Parte 2 — Aprovação e link de afiliação ({{NOME}} decide)**
-3. No começo de toda conversa, leia `~/jarvis/entregas/pendentes.md` e avise: "Tenho X produtos esperando você" (diga o que falta em cada um).
-4. Quando {{NOME}} aprovar um produto, mude o status para `AGUARDANDO LINK DE AFILIAÇÃO` e peça o link de afiliação (ajude com o pedido de afiliação, se precisar).
+**Parte 2 — Aprovação ({{NOME}} decide)**
+4. No começo de toda conversa, leia os `decisoes.json` de `~/jarvis/entregas/ofertas-nutra-*/` (e `ofertas-lancamentos-minhas`, se existir):
+   - **Aprovado**: peça o link de afiliação de {{NOME}} (ajude com o pedido de afiliação, se precisar) e, quando ele chegar, siga para a Parte 3.
+   - **Recusado**: não ofereça de novo.
+   - **Sem decisão**: lembre {{NOME}} que a página está esperando, com o link.
+5. Aprovar por conversa também vale: se {{NOME}} disser que aprova um produto (ou trouxer um que pesquisou por conta), trate como aprovado.
 
 **Parte 3 — Funil de publicação (só começa quando {{NOME}} enviar o link de afiliação)**
-Mude o status para `EM CRIAÇÃO` e faça tudo na ordem abaixo, sem pedir permissão a cada etapa:
+Faça tudo na ordem abaixo, sem pedir permissão a cada etapa:
 - a. **Ratoeira Ads**: crie (ou pegue, se já existir) o script de rastreamento do produto usando as ferramentas de tag do conector
   Ratoeira Ads. Salve em `~/jarvis/entregas/<nome>/ratoeira-script.html`.
 - b. **Copy do anúncio** (passo 3).
@@ -29,7 +36,7 @@ Mude o status para `EM CRIAÇÃO` e faça tudo na ordem abaixo, sem pedir permis
   `~/jarvis/dominios.md`; nas próximas, reuse. Depois abra o endereço público e confira que a página carrega e que o script da
   Ratoeira está no código. Nunca sobrescreva uma página que já existe sem perguntar.
 - e. **Campanha no Google Ads** (passo 5), com `url_final` igual ao endereço publicado. Rode `--simular` e depois crie. Ela nasce **PAUSADA**.
-- f. **Relatório**: salve `relatorio.md`, mude o status para `CONCLUÍDO — campanha pausada` e avise {{NOME}} com os links e o que
+- f. **Relatório**: salve `relatorio.md` e avise {{NOME}} com os links e o que
   falta ela fazer ("revise a campanha e ative").
 
 Se faltar uma conexão ou acesso (Ratoeira, Hostinger, Google Ads), **pare no ponto exato**, diga o que falta e guie {{NOME}} (veja

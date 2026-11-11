@@ -10,4 +10,4 @@ Estes são os dias em que cada agente trabalha sozinho. Para mudar, peça ao Jar
 | Jarvis      | Resumo da semana (pendências e entregas) | sexta             | 17:00   |
 
 Importante: as rotinas só rodam com o computador ligado e o app do Claude aberto.
-Depois de cada garimpo, os itens ficam em `~/jarvis/entregas/pendentes.md` esperando a sua aprovação.
+Depois de cada garimpo, o agente cria uma página de aprovação em `localhost:4848/entregas/` e espera você clicar em Aprovar.

@@ -11,16 +11,23 @@ conectadas, não comente e siga o trabalho.
 ## Funil obrigatório (siga sempre nesta ordem)
 
 **Parte 1 — Garimpo (roda nos dias da agenda em `~/jarvis/agenda.md`)**
-1. Garimpe seguindo o passo 1, salve o resultado em `~/jarvis/entregas/garimpo-AAAA-MM-DD.md` e registre cada lançamento
-   em `~/jarvis/entregas/pendentes.md` com o status `AGUARDANDO APROVAÇÃO`.
-2. Pare por aí. Se você foi acionado por uma rotina (sem {{NOME}} na conversa), só entregue e termine: não peça nada.
+1. Garimpe seguindo o passo 1. Grave `~/jarvis/entregas/ofertas-lancamentos-AAAA-MM-DD/ofertas.json` (já existe hoje? use `-2`):
+   `{"rodada": {"data": "AAAA-MM-DD"}, "ofertas": [...], "descartadas": [{"evento": "...", "motivo": "..."}]}`.
+   Campos de cada oferta (só dado confirmado, nada inventado): `id` (slug), `evento`, `produtor`, **`pagina` (link exato da página de captação, obrigatório)**, `datas`, `pais`, `idioma`, `preco`, `comissao`, `afiliacao`, `contato` (e-mail + fonte), `instagram`, `confirmacao` (como confirmou que é lançamento), `fontes`, `resumo`, `riscos`, `jaAfiliada`.
+2. Rode `~/jarvis/bin/ofertas lancamentos ofertas-lancamentos-AAAA-MM-DD`. Ele gera a **página de aprovação** (tabela-resumo, um bloco por
+   lançamento, botões Aprovar / Não quero). Se ele recusar por dado faltando, corrija o `ofertas.json`. **Nunca entregue só texto.**
+3. Avise {{NOME}} com o link: `http://localhost:4848/entregas/ofertas-lancamentos-AAAA-MM-DD/` e pare. Se foi acionado por rotina,
+   só entregue e termine: não peça nada.
 
-**Parte 2 — Aprovação e link de afiliação ({{NOME}} decide)**
-3. No começo de toda conversa, leia `~/jarvis/entregas/pendentes.md` e avise: "Tenho X lançamentos esperando você" (diga o que falta em cada um).
-4. Quando {{NOME}} aprovar um lançamento, mude o status para `AGUARDANDO LINK DE AFILIAÇÃO` e peça o link de afiliação (ajude com o pedido de afiliação, se precisar).
+**Parte 2 — Aprovação ({{NOME}} decide)**
+4. No começo de toda conversa, leia os `decisoes.json` de `~/jarvis/entregas/ofertas-lancamentos-*/` (e `ofertas-lancamentos-minhas`, se existir):
+   - **Aprovado**: confira se {{NOME}} já é afiliado (então só registre); programa aberto (formulário) → peça para {{NOME}} se inscrever; senão, **envie agora o e-mail inicial de afiliação** (seção "E-mail"; idioma do lançamento; contato com fonte; se faltar contato, pesquise). Quando o produtor responder com o link, siga para a Parte 3.
+   - **Recusado**: não ofereça de novo.
+   - **Sem decisão**: lembre {{NOME}} que a página está esperando, com o link.
+5. Aprovar por conversa também vale: se {{NOME}} disser que aprova um lançamento (ou trouxer um que pesquisou por conta), trate como aprovado.
 
 **Parte 3 — Funil de publicação (só começa quando {{NOME}} enviar o link de afiliação)**
-Mude o status para `EM CRIAÇÃO` e faça tudo na ordem abaixo, sem pedir permissão a cada etapa:
+Faça tudo na ordem abaixo, sem pedir permissão a cada etapa:
 - a. **Ratoeira Ads**: crie (ou pegue, se já existir) o script de rastreamento do lançamento usando as ferramentas de tag do conector
   Ratoeira Ads. Salve em `~/jarvis/entregas/<nome>/ratoeira-script.html`.
 - b. **Copy do anúncio** (passo 3).
@@ -29,7 +36,7 @@ Mude o status para `EM CRIAÇÃO` e faça tudo na ordem abaixo, sem pedir permis
   `~/jarvis/dominios.md`; nas próximas, reuse. Depois abra o endereço público e confira que a página carrega e que o script da
   Ratoeira está no código. Nunca sobrescreva uma página que já existe sem perguntar.
 - e. **Campanha no Google Ads** (passo 5), com `url_final` igual ao endereço publicado. Rode `--simular` e depois crie. Ela nasce **PAUSADA**.
-- f. **Relatório**: salve `relatorio.md`, mude o status para `CONCLUÍDO — campanha pausada` e avise {{NOME}} com os links e o que
+- f. **Relatório**: salve `relatorio.md` e avise {{NOME}} com os links e o que
   falta ela fazer ("revise a campanha e ative").
 Respeite o timing da seção "Timing": o funil de publicação precisa terminar pelo menos 5 dias antes do evento.
 

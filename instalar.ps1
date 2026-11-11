@@ -133,12 +133,14 @@ Copy-Item "$SCRIPT_DIR\escritorio\server.mjs"        "$JARVIS_DIR\escritorio\" -
 Copy-Item "$SCRIPT_DIR\escritorio\equipe.json"        "$JARVIS_DIR\escritorio\" -Force
 Copy-Item "$SCRIPT_DIR\escritorio\public\index.html"  "$JARVIS_DIR\escritorio\public\" -Force
 Copy-Item "$SCRIPT_DIR\escritorio\public\voz.html"    "$JARVIS_DIR\escritorio\public\" -Force
+Copy-Item "$SCRIPT_DIR\escritorio\public\aprovar-ofertas.js" "$JARVIS_DIR\escritorio\public\" -Force
 Copy-Item "$SCRIPT_DIR\agentes\jarvis\CLAUDE.md"      "$JARVIS_DIR\agentes\jarvis\" -Force
 Copy-Item "$SCRIPT_DIR\agentes\nutra\CLAUDE.md"       "$JARVIS_DIR\agentes\nutra\" -Force
 Copy-Item "$SCRIPT_DIR\agentes\lancamentos\CLAUDE.md" "$JARVIS_DIR\agentes\lancamentos\" -Force
 Copy-Item "$SCRIPT_DIR\bin\google-ads.mjs"             "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\google-ads-autorizar.mjs"   "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\google-ads-regras.json"     "$JARVIS_DIR\bin\" -Force
+Copy-Item "$SCRIPT_DIR\bin\ofertas.mjs"                 "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\conexoes.md"                    "$JARVIS_DIR\" -Force
 if (-not (Test-Path "$JARVIS_DIR\agenda.md")) { Copy-Item "$SCRIPT_DIR\agenda.md" "$JARVIS_DIR\" -Force }
 
@@ -152,6 +154,11 @@ if (-not (Test-Path "$JARVIS_DIR\agenda.md")) { Copy-Item "$SCRIPT_DIR\agenda.md
 @echo off
 "$env:USERPROFILE\.local\node\node.exe" "$env:USERPROFILE\jarvis\bin\google-ads-autorizar.mjs" %*
 "@ | Set-Content "$JARVIS_DIR\bin\google-ads-autorizar.cmd" -Encoding ASCII
+
+@"
+@echo off
+"$env:USERPROFILE\.local\node\node.exe" "$env:USERPROFILE\jarvis\bin\ofertas.mjs" %*
+"@ | Set-Content "$JARVIS_DIR\bin\ofertas.cmd" -Encoding ASCII
 
 Write-Ok "Arquivos copiados"
 

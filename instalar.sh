@@ -119,12 +119,14 @@ cp "$SCRIPT_DIR/escritorio/server.mjs" "$JARVIS_DIR/escritorio/"
 cp "$SCRIPT_DIR/escritorio/equipe.json" "$JARVIS_DIR/escritorio/"
 cp "$SCRIPT_DIR/escritorio/public/index.html" "$JARVIS_DIR/escritorio/public/"
 cp "$SCRIPT_DIR/escritorio/public/voz.html" "$JARVIS_DIR/escritorio/public/"
+cp "$SCRIPT_DIR/escritorio/public/aprovar-ofertas.js" "$JARVIS_DIR/escritorio/public/"
 cp "$SCRIPT_DIR/agentes/jarvis/CLAUDE.md" "$JARVIS_DIR/agentes/jarvis/"
 cp "$SCRIPT_DIR/agentes/nutra/CLAUDE.md" "$JARVIS_DIR/agentes/nutra/"
 cp "$SCRIPT_DIR/agentes/lancamentos/CLAUDE.md" "$JARVIS_DIR/agentes/lancamentos/"
 cp "$SCRIPT_DIR/bin/google-ads.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/google-ads-autorizar.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/google-ads-regras.json" "$JARVIS_DIR/bin/"
+cp "$SCRIPT_DIR/bin/ofertas.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/conexoes.md" "$JARVIS_DIR/"
 [ -f "$JARVIS_DIR/agenda.md" ] || cp "$SCRIPT_DIR/agenda.md" "$JARVIS_DIR/"
 
@@ -140,6 +142,12 @@ cat > "$JARVIS_DIR/bin/google-ads-autorizar" << 'SCRIPT'
 exec "$HOME/.local/node/bin/node" "$HOME/jarvis/bin/google-ads-autorizar.mjs" "$@"
 SCRIPT
 chmod +x "$JARVIS_DIR/bin/google-ads-autorizar"
+
+cat > "$JARVIS_DIR/bin/ofertas" << 'SCRIPT'
+#!/bin/sh
+exec "$HOME/.local/node/bin/node" "$HOME/jarvis/bin/ofertas.mjs" "$@"
+SCRIPT
+chmod +x "$JARVIS_DIR/bin/ofertas"
 
 ok "Arquivos copiados"
 

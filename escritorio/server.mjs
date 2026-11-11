@@ -15,6 +15,7 @@ const SESSIONS_DIR = path.join(CLAUDE_DIR, 'sessions');
 const PROJECTS_DIR = path.join(CLAUDE_DIR, 'projects');
 const RAIZ = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(RAIZ, 'public');
+const ENTREGAS_DIR = path.join(RAIZ, '..', 'entregas');
 const EQUIPE_ARQ = path.join(RAIZ, 'equipe.json');
 const CONFIG_ARQ = path.join(RAIZ, '..', 'config.json');
 const INTERVALO_MS = 1000;
@@ -384,9 +385,81 @@ function postPermitido(req) {
     (!origem || origem === `http://localhost:${PORTA}` || origem === `http://127.0.0.1:${PORTA}`);
 }
 
+// ---------- páginas de ofertas (aprovação) ----------
+// Os agentes entregam ~/jarvis/entregas/ofertas-<nutra|lancamentos>-<data>/ (ofertas.json + index.html gerado pelo comando
+// `ofertas`). Os botões Aprovar / Não quero (public/aprovar-ofertas.js) gravam decisoes.json na mesma pasta; o agente lê
+// esse arquivo no começo da conversa e segue (link de afiliação na Nutra, e-mail de afiliação em Lançamentos).
+const PASTA_OFERTAS = /^ofertas-(nutra|lancamentos)[\w.-]*$/;
+const lerLista = (arq) => { try { const j = JSON.parse(fs.readFileSync(arq, 'utf8')); return Array.isArray(j) ? j : j.ofertas || []; } catch { return []; } };
+const gravarJson = (arq, obj) => { fs.writeFileSync(arq + '.tmp', JSON.stringify(obj, null, 2) + '\n'); fs.renameSync(arq + '.tmp', arq); };
+
+function decidirOferta({ pasta, id, decisao, nota = '' }) {
+  if (typeof pasta !== 'string' || !PASTA_OFERTAS.test(pasta)) throw new Error('pasta inválida');
+  if (!['aprovar', 'recusar'].includes(decisao)) throw new Error('decisão inválida');
+  const dir = path.join(ENTREGAS_DIR, pasta);
+  if (!lerLista(path.join(dir, 'ofertas.json')).some((x) => x.id === id)) throw new Error('oferta não encontrada');
+  const arqDec = path.join(dir, 'decisoes.json');
+  let decisoes = {};
+  try { decisoes = JSON.parse(fs.readFileSync(arqDec, 'utf8')); } catch {}
+  if (decisoes[id]?.decisao === 'aprovar') throw new Error('já aprovada');
+  const registro = { decisao, nota: String(nota || '').trim().slice(0, 1000), quando: new Date().toISOString() };
+  if (decisao === 'aprovar') {
+    registro.msg = pasta.startsWith('ofertas-nutra')
+      ? 'Agora abra o agente Nutra (botão Code, pasta jarvis → agentes → nutra). Ele vai pedir o seu link de afiliação e seguir com o funil.'
+      : 'Agora abra o agente de Lançamentos (botão Code, pasta jarvis → agentes → lancamentos). Ele envia o e-mail de afiliação e acompanha a resposta.';
+  }
+  decisoes[id] = registro;
+  gravarJson(arqDec, decisoes);
+  return { ok: true, ...registro };
+}
+
+// "Achei um lançamento por conta": adicionar já é aprovar.
+function adicionarOferta(d) {
+  const campo = (k, n = 400) => String(d?.[k] || '').trim().slice(0, n);
+  const produtor = campo('produtor', 120), evento = campo('evento', 160), pagina = campo('pagina', 500);
+  if (!produtor || !evento) throw new Error('preencha o produtor e o nome do evento');
+  if (pagina && !/^https?:\/\/\S+$/i.test(pagina)) throw new Error('o link da página de captação precisa começar com http:// ou https://');
+  const pasta = 'ofertas-lancamentos-minhas', dir = path.join(ENTREGAS_DIR, pasta), arq = path.join(dir, 'ofertas.json');
+  fs.mkdirSync(dir, { recursive: true });
+  const lista = lerLista(arq);
+  const base = `${new Date().toLocaleDateString('sv-SE')}-${`${evento} ${produtor}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48)}`;
+  let id = base;
+  for (let n = 2; lista.some((x) => x.id === id); n++) id = `${base}-${n}`;
+  lista.push({ id, produtor, evento, pagina, datas: campo('datas', 200), pais: campo('pais', 80), preco: campo('preco', 120), comissao: campo('comissao', 200),
+    contato: campo('contato', 200), resumo: campo('nota', 1000) || 'Lançamento pesquisado pelo aluno.', origem: 'pesquisa do aluno', adicionadaEm: new Date().toISOString() });
+  gravarJson(arq, lista);
+  return decidirOferta({ pasta, id, decisao: 'aprovar', nota: campo('nota', 1000) });
+}
+
+function servirEntregas(req, res, url) {
+  let rel;
+  try { rel = decodeURIComponent(url.pathname.slice('/entregas'.length)).replace(/^\/+/, ''); } catch { return json(res, 400, { erro: 'endereço inválido' }); }
+  if (!rel) {
+    if (!url.pathname.endsWith('/')) { res.writeHead(301, { location: '/entregas/' }); return res.end(); }
+    let pastas = [];
+    try { pastas = fs.readdirSync(ENTREGAS_DIR, { withFileTypes: true }).filter((d) => d.isDirectory() && !d.name.startsWith('.')).map((d) => ({ nome: d.name, t: fs.statSync(path.join(ENTREGAS_DIR, d.name)).mtimeMs })).sort((a, b) => b.t - a.t); } catch {}
+    const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    res.writeHead(200, { 'content-type': TIPOS['.html'], 'cache-control': 'no-store' });
+    return res.end(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Entregas do Jarvis</title><body style="font:16px/1.6 -apple-system,Arial,sans-serif;max-width:720px;margin:24px auto;padding:0 16px"><h1>Entregas do Jarvis</h1>${pastas.length ? '<ul>' + pastas.map((p) => `<li><a href="/entregas/${encodeURIComponent(p.nome)}/">${esc(p.nome)}</a></li>`).join('') + '</ul>' : '<p>Ainda não há entregas.</p>'}`);
+  }
+  let arq = path.resolve(ENTREGAS_DIR, rel);
+  if (!arq.startsWith(ENTREGAS_DIR + path.sep)) return json(res, 403, { erro: 'proibido' });
+  try {
+    if (fs.statSync(arq).isDirectory()) {
+      if (!url.pathname.endsWith('/')) { res.writeHead(301, { location: url.pathname + '/' }); return res.end(); }
+      arq = path.join(arq, 'index.html');
+    }
+  } catch { return json(res, 404, { erro: 'não encontrado' }); }
+  fs.readFile(arq, (err, dados) => {
+    if (err) return json(res, 404, { erro: 'não encontrado' });
+    res.writeHead(200, { 'content-type': TIPOS[path.extname(arq)] || 'application/octet-stream', 'cache-control': 'no-store' });
+    res.end(dados);
+  });
+}
+
 const ROTAS = {
   '/api/enviar': novaMensagem, '/api/mod/inbox': caixaDeEntrada, '/api/mod/inbox/ack': confirmarEntrega,
-  '/api/mod/uso': guardarUso, '/api/musica': musica, '/api/voz': voz, '/api/voz/chave': guardarChaveVoz, '/api/voz/config': configurarVoz,
+  '/api/mod/uso': guardarUso, '/api/ofertas/decidir': decidirOferta, '/api/ofertas/adicionar': adicionarOferta, '/api/musica': musica, '/api/voz': voz, '/api/voz/chave': guardarChaveVoz, '/api/voz/config': configurarVoz,
 };
 
 const servidor = http.createServer((req, res) => {
@@ -404,6 +477,7 @@ const servidor = http.createServer((req, res) => {
     lerCorpo(req).then(async c => json(res, 200, await ROTAS[url.pathname](c))).catch(err => json(res, 400, { erro: err.message }));
     return;
   }
+  if (req.method === 'GET' && (url.pathname === '/entregas' || url.pathname.startsWith('/entregas/'))) return servirEntregas(req, res, url);
   if (req.method === 'GET') return servirEstatico(req, res, url);
   json(res, 404, { erro: 'não encontrado' });
 });
