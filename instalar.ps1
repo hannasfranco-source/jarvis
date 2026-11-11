@@ -49,10 +49,13 @@ if ($nodeCmd) {
 
     Write-Info "Extraindo..."
     if (Test-Path $nodeDir) { Remove-Item $nodeDir -Recurse -Force }
-    Expand-Archive -Path $nodeZip -DestinationPath "$env:TEMP\node-extract" -Force
-    Move-Item "$env:TEMP\node-extract\node-v22.12.0-win-x64" $nodeDir
+    New-Item -ItemType Directory -Path (Split-Path $nodeDir) -Force | Out-Null
+    $extractDir = "$env:TEMP\node-extract"
+    if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force }
+    Expand-Archive -Path $nodeZip -DestinationPath $extractDir -Force
+    Move-Item "$extractDir\node-v22.12.0-win-x64" $nodeDir
     Remove-Item $nodeZip -Force
-    Remove-Item "$env:TEMP\node-extract" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue
 
     $NODE_BIN = "$nodeDir\node.exe"
     $NODE_V = & $NODE_BIN -v 2>$null
