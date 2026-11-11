@@ -34,7 +34,7 @@ Sem isso eu não consigo [rastrear as vendas / publicar suas páginas]. Quer que
 1. Em **Configurações → Conectores**, clicar em **Procurar conectores** e digitar `ratoeira` na busca. Se aparecer, conectar normalmente.
 2. Se não aparecer, clicar em **Adicionar conector personalizado** (às vezes escrito **Adicionar conector**, ou o botão **+**).
 3. Em **Nome** escrever `Ratoeira Ads` e no endereço colar `https://mcp.ratoeiraads.com.br/mcp?token=SUA_CHAVE`, trocando `SUA_CHAVE` pela
-   chave (token) da conta Ratoeira Ads de {{NOME}}. O endereço **precisa terminar em `/mcp?token=<chave>`**; só `mcp.ratoeiraads.com.br`
+   chave (token) da conta Ratoeira Ads de {{NOME}}. Onde gerar: no painel da Ratoeira, menu **Integrações → API Keys** (tela "Tokens de acesso"), botão **NOVO**, tipo **MCP**, nome `Jarvis`; depois copiar o token. O endereço **precisa terminar em `/mcp?token=<chave>`**; só `mcp.ratoeiraads.com.br`
    dá erro 404. A chave é pessoal: não repita no chat nem salve em arquivo.
 4. Se aparecer "Não foi possível verificar o servidor", continuar mesmo assim. Em **Autenticação** escolher **Sem login** (a chave já vai no endereço)
    e salvar. Abrir uma **conversa nova** e confirmar com `get_cliente_me`.
@@ -78,6 +78,7 @@ Se {{NOME}} não usa Gmail (Outlook, Hotmail, e-mail do domínio): sem problema.
 ## Regras ao usar as conexões
 - Publicar página: confirme com {{NOME}} o domínio e o endereço (slug) antes. Nunca sobrescreva uma página que já existe
   sem perguntar.
-- O script de rastreamento da Ratoeira vai no topo do `<head>` de toda página que você criar. Pegue-o pelas ferramentas
-  de tag do conector Ratoeira Ads. Se a Ratoeira não estiver conectada, siga a seção acima antes de entregar a página.
+- O script de rastreamento da Ratoeira vai no topo do `<head>` de toda página que você criar. O conector Ratoeira Ads **não cria a
+  ratoeira nem devolve o script**: {{NOME}} cria a ratoeira no painel da Ratoeira e cola o script aqui. Use o conector para listar
+  projetos e ratoeiras, conferir tags e acompanhar vendas, custo e lucro.
 - Nunca mexa em cobrança, planos, domínios ou e-mails da Hostinger. Só publicação de páginas.

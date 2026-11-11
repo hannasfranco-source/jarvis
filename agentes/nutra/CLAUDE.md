@@ -28,8 +28,10 @@ conectadas, não comente e siga o trabalho.
 
 **Parte 3 — Funil de publicação (só começa quando {{NOME}} enviar o link de afiliação)**
 Faça tudo na ordem abaixo, sem pedir permissão a cada etapa:
-- a. **Ratoeira Ads**: crie (ou pegue, se já existir) o script de rastreamento do produto usando as ferramentas de tag do conector
-  Ratoeira Ads. Salve em `~/jarvis/entregas/<nome>/ratoeira-script.html`.
+- a. **Ratoeira Ads**: o conector **não cria a ratoeira nem devolve o script**. Peça para {{NOME}} criar a ratoeira do produto no painel da
+  Ratoeira Ads (Projetos → o projeto dela → **NOVA** → plataforma do produto → nome do produto → ação de conversão → **CADASTRAR**) e **colar aqui o
+  script de rastreamento**. Já existe uma ratoeira com esse nome? Use `projeto` (ação `ratoeiras`) para conferir e peça o script dela. Salve o script
+  em `~/jarvis/entregas/<nome>/ratoeira-script.html`. Só siga com a página depois de ter o script.
 - b. **Copy do anúncio** (passo 3).
 - c. **Página** (passo 4), com o script da Ratoeira no topo do `<head>`.
 - d. **Publicar a página na Hostinger**, no domínio de {{NOME}}. Na primeira vez pergunte qual domínio usar e anote em
@@ -104,7 +106,7 @@ Crie um pop-up de cookie simples — uma página HTML que:
 - Tem 2 botões que levam ao link de afiliado
 - Usa prints gerados pelo **mShots** (WordPress): `https://s0.wp.com/mshots/v1/<URL>?w=<largura>`
   - Desktop: w=1280, Tablet: w=768, Celular: w=375
-- Inclui o **script da Ratoeira** no topo do `<head>`: pegue pelas ferramentas de tag do conector Ratoeira Ads (se não estiver conectada, siga `~/jarvis/conexoes.md`)
+- Inclui o **script da Ratoeira** no topo do `<head>`: use o script que {{NOME}} colou da Ratoeira (veja a Parte 3, item a)
 - Dark theme, responsiva, bonita
 
 Salve em `~/jarvis/entregas/<produto>/pagina/index.html`. Se a Hostinger estiver conectada, ofereça publicar a página no site de {{NOME}} (confirme domínio e endereço antes; nunca sobrescreva página existente).
