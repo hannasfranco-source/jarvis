@@ -59,6 +59,16 @@
   .section-label { font: 700 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
   .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
+  /* ── Download buttons ── */
+  .download-btn { display:inline-flex;align-items:center;gap:8px;font:700 16px var(--body);color:#fff;background:var(--accent);border:none;border-radius:14px;padding:16px 32px;text-decoration:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 24px rgba(255,106,43,.3); }
+  .download-btn:hover { filter:brightness(1.15);transform:translateY(-1px);box-shadow:0 6px 32px rgba(255,106,43,.4); }
+  .download-btn-alt { background:transparent;border:2px solid var(--border-bright);color:var(--fg);box-shadow:none; }
+  .download-btn-alt:hover { border-color:var(--accent);color:var(--accent);box-shadow:none; }
+  details summary { list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:'▸ ';color:var(--fg-dim); }
+  details[open] summary::before { content:'▾ '; }
+
   /* ── OS tabs ── */
   .os-tab { font: 600 12px var(--mono); color: var(--fg-muted); background: transparent; border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; cursor: pointer; transition: all .2s; }
   .os-tab.active { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
@@ -179,28 +189,45 @@
   <!-- Install -->
   <div class="section" id="instalacao">
     <div class="section-label">Instalação</div>
-    <div class="install-box">
-      <div style="display:flex;gap:8px;margin-bottom:16px">
-        <button class="os-tab active" id="tabMac" onclick="switchOS('mac')">🍎 Mac</button>
-        <button class="os-tab" id="tabWin" onclick="switchOS('win')">🪟 Windows</button>
+    <div class="install-box" style="text-align:center">
+      <div class="install-label" style="text-align:center;margin-bottom:20px">Clique no botão do seu sistema</div>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <a href="https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar-jarvis.command" download="instalar-jarvis.command" class="download-btn" id="btnMac">🍎 Baixar para Mac</a>
+        <a href="https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar-jarvis.bat" download="instalar-jarvis.bat" class="download-btn download-btn-alt" id="btnWin">🪟 Baixar para Windows</a>
       </div>
-      <div id="installMac">
-        <div class="install-label">Cole no Terminal e aperte Enter</div>
-        <div class="install-cmd" id="cmdMac">
-          <button class="copy-btn" id="copyBtnMac" onclick="copyCmd('mac')">COPIAR</button>
-          <span class="sel">/bin/bash</span> -c "<span class="sel">$(</span>curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh<span class="sel">)</span>"
-        </div>
-        <div class="install-note">Funciona em qualquer Mac (Apple Silicon ou Intel). Abra o Terminal com <strong>Cmd + Espaço</strong> → digite "Terminal".</div>
+      <div class="install-note" style="text-align:center;margin-top:20px">
+        Baixe o arquivo e dê <strong>dois cliques</strong> nele. O instalador abre sozinho e cuida de tudo.
       </div>
-      <div id="installWin" style="display:none">
-        <div class="install-label">Cole no PowerShell e aperte Enter</div>
-        <div class="install-cmd" id="cmdWin">
-          <button class="copy-btn" id="copyBtnWin" onclick="copyCmd('win')">COPIAR</button>
-          irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex
-        </div>
-        <div class="install-note">Funciona em Windows 10/11. Abra o PowerShell: <strong>Win + X</strong> → "Windows PowerShell" (ou pesquise "PowerShell" no menu Iniciar).</div>
+      <div class="tip" style="margin-top:16px">
+        <strong>Mac:</strong> Se aparecer "não pode ser aberto", clique com o <strong>botão direito</strong> no arquivo → <strong>Abrir</strong> → <strong>Abrir</strong> de novo.<br>
+        <strong>Windows:</strong> Se aparecer "Windows protegeu seu PC", clique em <strong>Mais informações</strong> → <strong>Executar assim mesmo</strong>.
       </div>
     </div>
+
+    <!-- Opção avançada colapsável -->
+    <details style="margin-top:16px">
+      <summary style="font:500 13px var(--mono);color:var(--fg-dim);cursor:pointer;padding:8px 0">Opção avançada: comando manual</summary>
+      <div class="install-box" style="margin-top:12px">
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <button class="os-tab active" id="tabMac" onclick="switchOS('mac')">Mac</button>
+          <button class="os-tab" id="tabWin" onclick="switchOS('win')">Windows</button>
+        </div>
+        <div id="installMac">
+          <div class="install-label">Cole no Terminal e aperte Enter</div>
+          <div class="install-cmd" id="cmdMac">
+            <button class="copy-btn" id="copyBtnMac" onclick="copyCmd('mac')">COPIAR</button>
+            <span class="sel">/bin/bash</span> -c "<span class="sel">$(</span>curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh<span class="sel">)</span>"
+          </div>
+        </div>
+        <div id="installWin" style="display:none">
+          <div class="install-label">Cole no PowerShell e aperte Enter</div>
+          <div class="install-cmd" id="cmdWin">
+            <button class="copy-btn" id="copyBtnWin" onclick="copyCmd('win')">COPIAR</button>
+            irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex
+          </div>
+        </div>
+      </div>
+    </details>
   </div>
 
   <!-- Passo a passo -->
@@ -220,29 +247,19 @@
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-content">
-          <div class="step-title">Abra o Terminal <span class="os-hint mac-only">(Mac)</span><span class="os-hint win-only">(Windows)</span></div>
+          <div class="step-title">Baixe e abra o instalador</div>
           <div class="step-desc">
-            <span class="mac-only">Aperte <code>Cmd + Espaço</code>, digite <strong>Terminal</strong> e aperte Enter.</span>
-            <span class="win-only">Aperte <code>Win + X</code> e clique em <strong>Windows PowerShell</strong>. Ou pesquise "PowerShell" no menu Iniciar.</span>
-            É nessa tela preta que tudo acontece.
+            Clique no botão do seu sistema lá em cima (<strong>Mac</strong> ou <strong>Windows</strong>). Dê <strong>dois cliques</strong> no arquivo baixado. Uma tela preta vai abrir — é o instalador trabalhando. Ele vai:
+            <br>&#x2022; Instalar o Node.js (se precisar)
+            <br>&#x2022; Criar a pasta do Jarvis com tudo
+            <br>&#x2022; Perguntar seu nome
+            <br>&#x2022; Configurar o painel para abrir sozinho
+            <div class="tip"><strong>Mac:</strong> Se aparecer aviso de segurança, clique com <strong>botão direito</strong> → <strong>Abrir</strong>.<br><strong>Windows:</strong> Se aparecer "protegeu seu PC", clique em <strong>Mais informações</strong> → <strong>Executar assim mesmo</strong>.</div>
           </div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <div class="step-content">
-          <div class="step-title">Cole o comando de instalação</div>
-          <div class="step-desc">
-            Copie o comando laranja lá em cima (botão COPIAR), cole no Terminal com <code>Cmd + V</code> e aperte Enter. O instalador vai:
-            <br>&#x2022; Instalar o Node.js (se precisar)
-            <br>&#x2022; Criar a pasta <code>~/jarvis/</code> com tudo
-            <br>&#x2022; Perguntar seu nome
-            <br>&#x2022; Configurar o painel para abrir sozinho
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
         <div class="step-content">
           <div class="step-title">Abra o Escritório no Chrome</div>
           <div class="step-desc">
@@ -252,7 +269,7 @@
         </div>
       </div>
       <div class="step">
-        <div class="step-num">5</div>
+        <div class="step-num">4</div>
         <div class="step-content">
           <div class="step-title">Ative um agente</div>
           <div class="step-desc">
