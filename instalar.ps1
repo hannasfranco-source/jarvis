@@ -140,6 +140,7 @@ Copy-Item "$SCRIPT_DIR\bin\google-ads.mjs"             "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\google-ads-autorizar.mjs"   "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\google-ads-regras.json"     "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\conexoes.md"                    "$JARVIS_DIR\" -Force
+if (-not (Test-Path "$JARVIS_DIR\agenda.md")) { Copy-Item "$SCRIPT_DIR\agenda.md" "$JARVIS_DIR\" -Force }
 
 # Criar scripts .cmd para os comandos
 @"
@@ -183,6 +184,11 @@ foreach ($agente in @("jarvis", "nutra", "lancamentos")) {
 $conPath = "$JARVIS_DIR\conexoes.md"
 if (Test-Path $conPath) {
     (Get-Content $conPath -Raw) -replace '\{\{NOME\}\}', $NOME | Set-Content $conPath -Encoding UTF8 -NoNewline
+}
+
+$agPath = "$JARVIS_DIR\agenda.md"
+if (Test-Path $agPath) {
+    (Get-Content $agPath -Raw) -replace '\{\{NOME\}\}', $NOME | Set-Content $agPath -Encoding UTF8 -NoNewline
 }
 
 # ─── 8. Configurar Google Ads (opcional) ───
@@ -277,7 +283,7 @@ Write-Host "  • Lançamentos → garimpo, copy, página e campanha" -Foregroun
 Write-Host "  • Jarvis      → orquestra tudo, responde por voz" -ForegroundColor DarkYellow
 Write-Host ""
 Write-Host "  Conexões (importante):" -ForegroundColor White
-Write-Host "  → Falta conectar a Ratoeira Ads e a Hostinger. O Jarvis te guia na primeira conversa." -ForegroundColor DarkYellow
+Write-Host "  → Falta conectar a Ratoeira Ads, a Hostinger e o e-mail (Lançamentos). O Jarvis te guia na primeira conversa." -ForegroundColor DarkYellow
 Write-Host ""
 if ($GAS_CLIENT_ID) {
     Write-Host "  ✓ Google Ads: Credenciais salvas. Rode: $JARVIS_DIR\bin\google-ads-autorizar.cmd" -ForegroundColor Green

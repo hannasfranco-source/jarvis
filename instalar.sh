@@ -126,6 +126,7 @@ cp "$SCRIPT_DIR/bin/google-ads.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/google-ads-autorizar.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/google-ads-regras.json" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/conexoes.md" "$JARVIS_DIR/"
+[ -f "$JARVIS_DIR/agenda.md" ] || cp "$SCRIPT_DIR/agenda.md" "$JARVIS_DIR/"
 
 # Criar os comandos executáveis
 cat > "$JARVIS_DIR/bin/google-ads" << 'SCRIPT'
@@ -166,6 +167,7 @@ sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/agentes/jarvis/CLAUDE.md" 2>/dev/nul
 sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/agentes/nutra/CLAUDE.md" 2>/dev/null || true
 sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/agentes/lancamentos/CLAUDE.md" 2>/dev/null || true
 sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/conexoes.md" 2>/dev/null || true
+sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/agenda.md" 2>/dev/null || true
 
 # ─── 8. Configurar Google Ads (opcional) ───
 echo ""
@@ -262,7 +264,7 @@ echo -e "  ${COR}•${RESET} Lançamentos → garimpo, copy, página e campanha"
 echo -e "  ${COR}•${RESET} Jarvis      → orquestra tudo, responde por voz"
 echo ""
 echo -e "  ${BOLD}Conexões (importante):${RESET}"
-echo -e "  ${COR}→${RESET} Falta conectar a ${COR}Ratoeira Ads${RESET} e a ${COR}Hostinger${RESET}. O Jarvis te guia na primeira conversa."
+echo -e "  ${COR}→${RESET} Falta conectar a ${COR}Ratoeira Ads${RESET}, a ${COR}Hostinger${RESET} e o ${COR}e-mail${RESET} (Lançamentos). O Jarvis te guia na primeira conversa."
 echo ""
 echo -e "  ${BOLD}Google Ads:${RESET}"
 if [ -n "$GAS_CLIENT_ID" ]; then

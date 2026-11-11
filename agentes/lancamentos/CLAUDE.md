@@ -8,6 +8,40 @@ No começo de toda conversa nova, leia `~/jarvis/conexoes.md` e confira se a **R
 conectadas. Se faltar alguma, avise {{NOME}} e ofereça guiar passo a passo, exatamente como o guia manda. Se já estiverem
 conectadas, não comente e siga o trabalho.
 
+## Funil obrigatório (siga sempre nesta ordem)
+
+**Parte 1 — Garimpo (roda nos dias da agenda em `~/jarvis/agenda.md`)**
+1. Garimpe seguindo o passo 1, salve o resultado em `~/jarvis/entregas/garimpo-AAAA-MM-DD.md` e registre cada lançamento
+   em `~/jarvis/entregas/pendentes.md` com o status `AGUARDANDO APROVAÇÃO`.
+2. Pare por aí. Se você foi acionado por uma rotina (sem {{NOME}} na conversa), só entregue e termine: não peça nada.
+
+**Parte 2 — Aprovação e link de afiliação ({{NOME}} decide)**
+3. No começo de toda conversa, leia `~/jarvis/entregas/pendentes.md` e avise: "Tenho X lançamentos esperando você" (diga o que falta em cada um).
+4. Quando {{NOME}} aprovar um lançamento, mude o status para `AGUARDANDO LINK DE AFILIAÇÃO` e peça o link de afiliação (ajude com o pedido de afiliação, se precisar).
+
+**Parte 3 — Funil de publicação (só começa quando {{NOME}} enviar o link de afiliação)**
+Mude o status para `EM CRIAÇÃO` e faça tudo na ordem abaixo, sem pedir permissão a cada etapa:
+- a. **Ratoeira Ads**: crie (ou pegue, se já existir) o script de rastreamento do lançamento usando as ferramentas de tag do conector
+  Ratoeira Ads. Salve em `~/jarvis/entregas/<nome>/ratoeira-script.html`.
+- b. **Copy do anúncio** (passo 3).
+- c. **Página** (passo 4), com o script da Ratoeira no topo do `<head>`.
+- d. **Publicar a página na Hostinger**, no domínio de {{NOME}}. Na primeira vez pergunte qual domínio usar e anote em
+  `~/jarvis/dominios.md`; nas próximas, reuse. Depois abra o endereço público e confira que a página carrega e que o script da
+  Ratoeira está no código. Nunca sobrescreva uma página que já existe sem perguntar.
+- e. **Campanha no Google Ads** (passo 5), com `url_final` igual ao endereço publicado. Rode `--simular` e depois crie. Ela nasce **PAUSADA**.
+- f. **Relatório**: salve `relatorio.md`, mude o status para `CONCLUÍDO — campanha pausada` e avise {{NOME}} com os links e o que
+  falta ela fazer ("revise a campanha e ative").
+Respeite o timing da seção "Timing": o funil de publicação precisa terminar pelo menos 5 dias antes do evento.
+
+Se faltar uma conexão ou acesso (Ratoeira, Hostinger, Google Ads), **pare no ponto exato**, diga o que falta e guie {{NOME}} (veja
+`~/jarvis/conexoes.md`). Depois que resolver, continue de onde parou, sem refazer o que já está pronto.
+**Nunca**: pular etapa, publicar antes da aprovação e do link de afiliação, ou ativar campanha.
+
+## E-mail (para pedir afiliação)
+Você usa o e-mail de {{NOME}} para pedir afiliação aos produtores, pelo conector Gmail. Confira se ele está conectado (veja
+`~/jarvis/conexoes.md`). Só envie depois que {{NOME}} aprovar o lançamento, mostrando o texto e o destinatário antes. Sem o conector,
+entregue o e-mail pronto no chat para {{NOME}} enviar. Depois, procure a resposta do produtor e avise {{NOME}} quando chegar o link de afiliação.
+
 ## Fluxo completo de um lançamento
 
 ### 1. Garimpo (encontrar lançamentos)

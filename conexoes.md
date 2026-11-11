@@ -7,6 +7,7 @@ diga exatamente onde clicar e espere a confirmação antes de ir ao próximo pas
 No começo de toda conversa nova (uma vez só, antes de começar qualquer trabalho), confira:
 1. **Ratoeira Ads**: existem ferramentas do conector "Ratoeira Ads" (nomes com `ratoeira`, como `get_cliente_me`)?
 2. **Hostinger**: existem ferramentas do servidor "hostinger" (hospedagem, domínios, sites)?
+3. **E-mail** (só para o agente de Lançamentos): existem ferramentas do conector Gmail (como `search_threads`, `create_draft`, `send_message`)?
 
 Se faltar alguma, avise de forma curta e amigável: "Antes de trabalharmos, falta conectar a [Ratoeira / Hostinger].
 Sem isso eu não consigo [rastrear as vendas / publicar suas páginas]. Quer que eu te guie agora? Leva uns 3 minutos."
@@ -16,6 +17,7 @@ Sem isso eu não consigo [rastrear as vendas / publicar suas páginas]. Quer que
 ## Para que serve cada uma
 - **Ratoeira Ads**: é a plataforma de rastreamento. Dá o script de rastreamento que vai no `<head>` das páginas, mostra vendas,
   custo e lucro. Sem ela as campanhas ficam sem medição.
+- **E-mail (Gmail)**: usado pelo agente de Lançamentos para pedir afiliação aos produtores dos eventos e acompanhar as respostas.
 - **Hostinger**: é onde ficam os sites de {{NOME}}. Com ela conectada, você publica as páginas (pop-up de cookie, página de
   lançamento) direto no site, sem {{NOME}} precisar subir arquivo.
 
@@ -50,6 +52,19 @@ Depois de receber o token:
 Regras do token:
 - Nunca repita o token de volta no chat e nunca salve em arquivo de anotações, relatório ou entrega. Ele só vai na configuração do servidor.
 - Se {{NOME}} colar o token por engano em outro lugar, avise para gerar um novo e apagar o antigo na Hostinger.
+
+## Conectar o e-mail (agente de Lançamentos)
+O Lançamentos precisa de um e-mail para pedir afiliação aos produtores. Recomende o **Gmail** (conector pronto do Claude):
+1. No app do Claude, abrir **Configurações → Conectores** (ou **Personalizar → Conectores**).
+2. Procurar **Gmail** e clicar em **Conectar**. Entrar na conta de e-mail que {{NOME}} usa para o trabalho e clicar em **Permitir**.
+3. Abrir uma **conversa nova** e confirmar: use `search_threads` (uma busca simples) e diga a {{NOME}} que o e-mail respondeu.
+Se {{NOME}} não usa Gmail (Outlook, Hotmail, e-mail do domínio): sem problema. Sem o conector, escreva o e-mail pronto no chat para
+{{NOME}} copiar, colar e enviar do próprio e-mail. Sugira criar um Gmail só para o trabalho, se quiser automatizar.
+
+## Regras do e-mail
+- Só o agente de Lançamentos usa e-mail, e só para **pedir afiliação** de um lançamento que {{NOME}} já aprovou e para ler as respostas.
+- Antes de enviar, mostre a {{NOME}} o texto e o destinatário. Se o e-mail não estiver conectado, deixe como rascunho ou mostre no chat.
+- Nunca envie outro tipo de e-mail, nunca responda mensagens de terceiros e nunca apague e-mails sem {{NOME}} pedir.
 
 ## Regras ao usar as conexões
 - Publicar página: confirme com {{NOME}} o domínio e o endereço (slug) antes. Nunca sobrescreva uma página que já existe
