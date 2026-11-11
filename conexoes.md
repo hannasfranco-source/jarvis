@@ -30,7 +30,13 @@ Sem isso eu não consigo [rastrear as vendas / publicar suas páginas]. Quer que
 4. Abrir uma **conversa nova** (o conector só aparece nas conversas novas).
 5. Confirmar: use a ferramenta `get_cliente_me` e diga o nome da conta que apareceu. Se aparecer, está pronto.
 
-Se não achar o conector na lista, peça a {{NOME}} um print da tela e ajude a procurar.
+**Se "Ratoeira Ads" não aparecer na lista** (acontece com algumas contas), use o plano B, adicionando pelo endereço:
+1. Em **Configurações → Conectores**, clicar em **Procurar conectores** e digitar `ratoeira` na busca. Se aparecer, conectar normalmente.
+2. Se não aparecer, clicar em **Adicionar conector personalizado** (às vezes escrito **Adicionar conector**, ou o botão **+**).
+3. Em **Nome** escrever `Ratoeira Ads` e em **URL** colar exatamente: `https://mcp.ratoeiraads.com.br` e clicar em **Adicionar**.
+4. Clicar em **Conectar**, entrar com o e-mail e a senha da Ratoeira e **Permitir**. Depois abrir uma conversa nova e confirmar com `get_cliente_me`.
+Se mesmo assim não houver a opção de conector personalizado, peça um print da tela de Conectores a {{NOME}} e avise que pode ser limitação do plano
+ou da conta do Claude (em contas de empresa/equipe, quem administra a conta precisa liberar). Não invente outro caminho.
 
 ## Conectar a Hostinger
 Precisa de uma chave de acesso (token) da conta Hostinger de {{NOME}}. Guie assim:
