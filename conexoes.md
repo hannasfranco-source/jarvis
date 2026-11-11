@@ -33,8 +33,11 @@ Sem isso eu não consigo [rastrear as vendas / publicar suas páginas]. Quer que
 **Se "Ratoeira Ads" não aparecer na lista** (acontece com algumas contas), use o plano B, adicionando pelo endereço:
 1. Em **Configurações → Conectores**, clicar em **Procurar conectores** e digitar `ratoeira` na busca. Se aparecer, conectar normalmente.
 2. Se não aparecer, clicar em **Adicionar conector personalizado** (às vezes escrito **Adicionar conector**, ou o botão **+**).
-3. Em **Nome** escrever `Ratoeira Ads` e em **URL** colar exatamente: `https://mcp.ratoeiraads.com.br` e clicar em **Adicionar**.
-4. Clicar em **Conectar**, entrar com o e-mail e a senha da Ratoeira e **Permitir**. Depois abrir uma conversa nova e confirmar com `get_cliente_me`.
+3. Em **Nome** escrever `Ratoeira Ads` e no endereço colar `https://mcp.ratoeiraads.com.br/mcp?token=SUA_CHAVE`, trocando `SUA_CHAVE` pela
+   chave (token) da conta Ratoeira Ads de {{NOME}}. O endereço **precisa terminar em `/mcp?token=<chave>`**; só `mcp.ratoeiraads.com.br`
+   dá erro 404. A chave é pessoal: não repita no chat nem salve em arquivo.
+4. Se aparecer "Não foi possível verificar o servidor", continuar mesmo assim. Em **Autenticação** escolher **Sem login** (a chave já vai no endereço)
+   e salvar. Abrir uma **conversa nova** e confirmar com `get_cliente_me`.
 Se mesmo assim não houver a opção de conector personalizado, peça um print da tela de Conectores a {{NOME}} e avise que pode ser limitação do plano
 ou da conta do Claude (em contas de empresa/equipe, quem administra a conta precisa liberar). Não invente outro caminho.
 
