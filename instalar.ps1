@@ -22,6 +22,9 @@ function Write-Erro($msg)  { Write-Host "  ✗ $msg" -ForegroundColor Red }
 
 Write-Banner
 
+# Modo sem perguntas: quando rodado pelo Claude (sem teclado), usa JARVIS_NOME e pula as perguntas opcionais
+$INTERATIVO = [Environment]::UserInteractive -and -not [Console]::IsInputRedirected
+
 # ─── 1. Verificar sistema ───
 Write-Info "Verificando o sistema..."
 if ($env:OS -ne "Windows_NT") {
@@ -80,11 +83,13 @@ if ($claudeCmd) {
     Write-Info "Você precisa do Claude Pro ou Max para usar o Jarvis."
     Write-Info "Instale: https://claude.ai/download"
     Write-Host ""
-    $resp = Read-Host "  Já tem o Claude Code instalado? (s/n)"
-    if ($resp -ne "s" -and $resp -ne "S") {
-        Write-Host ""
-        Write-Info "Instale o Claude Code e rode este instalador de novo."
-        exit 0
+    if ($INTERATIVO) {
+        $resp = Read-Host "  Já tem o Claude Code instalado? (s/n)"
+        if ($resp -ne "s" -and $resp -ne "S") {
+            Write-Host ""
+            Write-Info "Instale o Claude Code e rode este instalador de novo."
+            exit 0
+        }
     }
 }
 
@@ -150,7 +155,8 @@ Write-Ok "Arquivos copiados"
 
 # ─── 7. Perguntar o nome ───
 Write-Host ""
-$NOME = Read-Host "  Qual é o seu nome?"
+$NOME = $env:JARVIS_NOME
+if ([string]::IsNullOrWhiteSpace($NOME) -and $INTERATIVO) { $NOME = Read-Host "  Qual é o seu nome?" }
 if ([string]::IsNullOrWhiteSpace($NOME)) { $NOME = "Aluno" }
 
 @"
@@ -182,7 +188,8 @@ Write-Info "projeto no Google Cloud com a API do Google Ads ativada."
 Write-Host ""
 Write-Info "Guia completo: https://github.com/gringa-ads/jarvis/wiki/Google-Ads"
 Write-Host ""
-$resp = Read-Host "  Já tem as credenciais do Google Ads? (s/n)"
+$resp = "n"
+if ($INTERATIVO) { $resp = Read-Host "  Já tem as credenciais do Google Ads? (s/n)" }
 if ($resp -eq "s" -or $resp -eq "S") {
     $GAS_CLIENT_ID = Read-Host "  Client ID"
     $GAS_CLIENT_SECRET = Read-Host "  Client Secret"
@@ -274,5 +281,7 @@ Write-Host "  → Crie conta grátis em fish.audio" -ForegroundColor DarkYellow
 Write-Host "  → Abra http://localhost:4848/voz.html e cole a chave" -ForegroundColor DarkYellow
 Write-Host ""
 
-Write-Host "  Pressione Enter para fechar..." -ForegroundColor DarkGray
-Read-Host
+if ($INTERATIVO) {
+    Write-Host "  Pressione Enter para fechar..." -ForegroundColor DarkGray
+    Read-Host
+}

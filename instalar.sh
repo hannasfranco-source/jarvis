@@ -26,6 +26,10 @@ erro() { echo -e "  \033[1;31m✗${RESET} $1"; }
 
 banner
 
+# Modo sem perguntas: quando rodado pelo Claude (sem teclado), usa JARVIS_NOME e pula as perguntas opcionais
+INTERATIVO=1
+[ -t 0 ] || INTERATIVO=0
+
 # ─── 1. Verificar sistema ───
 info "Verificando o sistema..."
 if [[ "$(uname)" != "Darwin" ]]; then
@@ -77,11 +81,13 @@ else
   info "Você precisa do Claude Pro ou Max para usar o Jarvis."
   info "Instale: ${COR}https://claude.ai/download${RESET}"
   echo ""
-  read -rp "  Já tem o Claude Code instalado? (s/n) " resp
-  if [[ "$resp" != "s" && "$resp" != "S" ]]; then
-    echo ""
-    info "Instale o Claude Code e rode este instalador de novo."
-    exit 0
+  if [ "$INTERATIVO" = "1" ]; then
+    read -rp "  Já tem o Claude Code instalado? (s/n) " resp
+    if [[ "$resp" != "s" && "$resp" != "S" ]]; then
+      echo ""
+      info "Instale o Claude Code e rode este instalador de novo."
+      exit 0
+    fi
   fi
 fi
 
@@ -137,7 +143,10 @@ ok "Arquivos copiados"
 
 # ─── 7. Perguntar o nome ───
 echo ""
-read -rp "  Qual é o seu nome? " NOME
+NOME="${JARVIS_NOME:-}"
+if [ -z "$NOME" ] && [ "$INTERATIVO" = "1" ]; then
+  read -rp "  Qual é o seu nome? " NOME
+fi
 NOME="${NOME:-Aluno}"
 # Salvar config
 cat > "$JARVIS_DIR/config.json" << EOF
@@ -165,7 +174,8 @@ info "projeto no Google Cloud com a API do Google Ads ativada."
 echo ""
 info "Guia completo: ${COR}https://github.com/gringa-ads/jarvis/wiki/Google-Ads${RESET}"
 echo ""
-read -rp "  Já tem as credenciais do Google Ads? (s/n) " resp
+resp="n"
+[ "$INTERATIVO" = "1" ] && read -rp "  Já tem as credenciais do Google Ads? (s/n) " resp
 if [[ "$resp" == "s" || "$resp" == "S" ]]; then
   read -rp "  Client ID: " GAS_CLIENT_ID
   read -rp "  Client Secret: " GAS_CLIENT_SECRET
