@@ -22,11 +22,14 @@ No máximo **uma vez por dia**, no começo de uma conversa com {{NOME}} (nunca n
 1. Leia `~/jarvis/.ultima-checagem`: se contém a data de hoje, pare aqui. Senão, grave nele a data de hoje (AAAA-MM-DD).
 2. Leia a versão instalada em `~/jarvis/versao.json` (campo `versao`) e busque a mais recente com
    `curl -fsSL -m 5 https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/versao.json`. Se a busca falhar ou as versões forem iguais, **não diga nada**.
-3. Se forem diferentes, avise em poucas linhas, em português simples, com as `novidades` da versão nova, e pergunte: "Quer atualizar agora? Leva cerca de 1 minuto."
-   Se {{NOME}} disser "depois", respeite e não pergunte de novo hoje.
-4. Se disser sim, rode `~/jarvis/bin/atualizar` (Windows: `~/jarvis/bin/atualizar.cmd`). Ele mantém o nome, a agenda, o Google Ads, a voz, as conexões e os agentes que {{NOME}} criou.
-   As instruções dos agentes padrão são renovadas; se {{NOME}} tinha personalizado alguma, a versão anterior fica salva na pasta do agente como `CLAUDE.anterior-<data>.md`.
-5. Quando terminar, diga que deu certo, repita as novidades e peça para abrir uma **conversa nova** para o agente usar as instruções novas.
+3. Se forem diferentes, veja `atualizacaoAutomatica` em `~/jarvis/config.json`. **Se não for `false` (o padrão é atualizar sozinho):** rode direto
+   `~/jarvis/bin/atualizar` (Windows: `~/jarvis/bin/atualizar.cmd`), sem perguntar. **Se for `false`:** avise em poucas linhas, com as `novidades`
+   da versão nova, e pergunte "Quer atualizar agora? Leva cerca de 1 minuto." (se disser "depois", não pergunte de novo hoje).
+4. A atualização mantém o nome, a agenda, o Google Ads, a voz, as conexões e os agentes que {{NOME}} criou. As instruções dos agentes padrão são renovadas;
+   se {{NOME}} tinha personalizado alguma, a versão anterior fica salva na pasta do agente como `CLAUDE.anterior-<data>.md`.
+5. Quando terminar, diga em uma ou duas frases que o Jarvis foi atualizado, repita as novidades e peça para abrir uma **conversa nova** para os
+   agentes usarem as instruções novas.
+6. Se {{NOME}} pedir "pare de atualizar sozinho", troque `atualizacaoAutomatica` para `false` em `~/jarvis/config.json` (e para `true` se pedir para voltar).
 
 ## Para que serve cada uma
 - **Ratoeira Ads**: é a plataforma de rastreamento. Dá o script de rastreamento que vai no `<head>` das páginas, mostra vendas,

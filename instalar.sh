@@ -196,7 +196,8 @@ cat > "$JARVIS_DIR/config.json" << EOF
   "musicaBomDia": "spotify:track:08mG3Y1vljYA6bvDt4Wqkj",
   "musicaInicio": 9,
   "vozProvedor": "fish",
-  "vozId": ""
+  "vozId": "",
+  "atualizacaoAutomatica": true
 }
 EOF
 fi

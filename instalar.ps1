@@ -211,7 +211,8 @@ if (-not (Test-Path "$JARVIS_DIR\config.json")) {
   "musicaBomDia": "spotify:track:08mG3Y1vljYA6bvDt4Wqkj",
   "musicaInicio": 9,
   "vozProvedor": "fish",
-  "vozId": ""
+  "vozId": "",
+  "atualizacaoAutomatica": true
 }
 "@ | Set-Content "$JARVIS_DIR\config.json" -Encoding UTF8
 }
