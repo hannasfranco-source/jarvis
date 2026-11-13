@@ -24,6 +24,7 @@ Write-Banner
 
 # Modo sem perguntas: quando rodado pelo Claude (sem teclado), usa JARVIS_NOME e pula as perguntas opcionais
 $INTERATIVO = [Environment]::UserInteractive -and -not [Console]::IsInputRedirected
+if ($env:JARVIS_ATUALIZAR -eq "1") { $INTERATIVO = $false }
 
 # ─── 1. Verificar sistema ───
 Write-Info "Verificando o sistema..."
@@ -129,8 +130,20 @@ foreach ($d in $dirs) {
 # ─── 6. Copiar arquivos ───
 Write-Info "Copiando arquivos..."
 
+# Atualização: guarda uma cópia das instruções atuais dos agentes (o aluno pode ter personalizado)
+$carimbo = Get-Date -Format "yyyyMMdd-HHmm"
+foreach ($a in @("jarvis", "nutra", "lancamentos")) {
+    $md = "$JARVIS_DIR\agentes\$a\CLAUDE.md"
+    if (Test-Path $md) { Copy-Item $md "$JARVIS_DIR\agentes\$a\CLAUDE.anterior-$carimbo.md" -Force }
+}
+
 Copy-Item "$SCRIPT_DIR\escritorio\server.mjs"        "$JARVIS_DIR\escritorio\" -Force
-Copy-Item "$SCRIPT_DIR\escritorio\equipe.json"        "$JARVIS_DIR\escritorio\" -Force
+if (Test-Path "$JARVIS_DIR\escritorio\equipe.json") {
+    try { & $NODE_BIN "$SCRIPT_DIR\bin\mesclar-equipe.mjs" "$SCRIPT_DIR\escritorio\equipe.json" "$JARVIS_DIR\escritorio\equipe.json" | Out-Null }
+    catch { Copy-Item "$SCRIPT_DIR\escritorio\equipe.json" "$JARVIS_DIR\escritorio\" -Force }
+} else {
+    Copy-Item "$SCRIPT_DIR\escritorio\equipe.json" "$JARVIS_DIR\escritorio\" -Force
+}
 Copy-Item "$SCRIPT_DIR\escritorio\public\index.html"  "$JARVIS_DIR\escritorio\public\" -Force
 Copy-Item "$SCRIPT_DIR\escritorio\public\voz.html"    "$JARVIS_DIR\escritorio\public\" -Force
 Copy-Item "$SCRIPT_DIR\escritorio\public\aprovar-ofertas.js" "$JARVIS_DIR\escritorio\public\" -Force
@@ -143,6 +156,7 @@ Copy-Item "$SCRIPT_DIR\bin\google-ads-regras.json"     "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\ofertas.mjs"                 "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\bin\ratoeira-script.mjs"         "$JARVIS_DIR\bin\" -Force
 Copy-Item "$SCRIPT_DIR\conexoes.md"                    "$JARVIS_DIR\" -Force
+Copy-Item "$SCRIPT_DIR\versao.json"                    "$JARVIS_DIR\" -Force
 if (-not (Test-Path "$JARVIS_DIR\agenda.md")) { Copy-Item "$SCRIPT_DIR\agenda.md" "$JARVIS_DIR\" -Force }
 
 # Criar scripts .cmd para os comandos
@@ -174,14 +188,23 @@ if exist "$env:USERPROFILE\.local\node\node.exe" (
 )
 "@ | Set-Content "$JARVIS_DIR\bin\ratoeira-script.cmd" -Encoding ASCII
 
+@'
+@echo off
+powershell -ExecutionPolicy Bypass -Command "$env:JARVIS_ATUALIZAR='1'; irm https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.ps1 | iex"
+'@ | Set-Content "$JARVIS_DIR\bin\atualizar.cmd" -Encoding ASCII
+
 Write-Ok "Arquivos copiados"
 
 # ─── 7. Perguntar o nome ───
 Write-Host ""
 $NOME = $env:JARVIS_NOME
+if ([string]::IsNullOrWhiteSpace($NOME) -and (Test-Path "$JARVIS_DIR\config.json")) {
+    try { $NOME = (Get-Content "$JARVIS_DIR\config.json" -Raw | ConvertFrom-Json).nome } catch {}
+}
 if ([string]::IsNullOrWhiteSpace($NOME) -and $INTERATIVO) { $NOME = Read-Host "  Qual é o seu nome?" }
 if ([string]::IsNullOrWhiteSpace($NOME)) { $NOME = "Aluno" }
 
+if (-not (Test-Path "$JARVIS_DIR\config.json")) {
 @"
 {
   "nome": "$NOME",
@@ -191,6 +214,7 @@ if ([string]::IsNullOrWhiteSpace($NOME)) { $NOME = "Aluno" }
   "vozId": ""
 }
 "@ | Set-Content "$JARVIS_DIR\config.json" -Encoding UTF8
+}
 
 Write-Ok "Configurado para $NOME"
 
@@ -213,39 +237,43 @@ if (Test-Path $agPath) {
 }
 
 # ─── 8. Configurar Google Ads (opcional) ───
-Write-Host ""
-Write-Host "  --- Google Ads (opcional, pode fazer depois) ---" -ForegroundColor DarkYellow
-Write-Host ""
-Write-Info "Para criar campanhas pelo Jarvis, você precisa de um"
-Write-Info "projeto no Google Cloud com a API do Google Ads ativada."
-Write-Host ""
-Write-Info "Guia completo: https://github.com/gringa-ads/jarvis/wiki/Google-Ads"
-Write-Host ""
-$resp = "n"
-if ($INTERATIVO) { $resp = Read-Host "  Já tem as credenciais do Google Ads? (s/n)" }
-if ($resp -eq "s" -or $resp -eq "S") {
-    $GAS_CLIENT_ID = Read-Host "  Client ID"
-    $GAS_CLIENT_SECRET = Read-Host "  Client Secret"
-    $GAS_DEV_TOKEN = Read-Host "  Developer Token"
-    $GAS_MCC = Read-Host "  Login Customer ID (MCC, sem traços)"
-    @"
+if (Test-Path "$JARVIS_DIR\.google-ads.env") {
+    Write-Ok "Google Ads: configuração mantida"
+} else {
+    Write-Host ""
+    Write-Host "  --- Google Ads (opcional, pode fazer depois) ---" -ForegroundColor DarkYellow
+    Write-Host ""
+    Write-Info "Para criar campanhas pelo Jarvis, você precisa de um"
+    Write-Info "projeto no Google Cloud com a API do Google Ads ativada."
+    Write-Host ""
+    Write-Info "Guia completo: https://github.com/gringa-ads/jarvis/wiki/Google-Ads"
+    Write-Host ""
+    $resp = "n"
+    if ($INTERATIVO) { $resp = Read-Host "  Já tem as credenciais do Google Ads? (s/n)" }
+    if ($resp -eq "s" -or $resp -eq "S") {
+        $GAS_CLIENT_ID = Read-Host "  Client ID"
+        $GAS_CLIENT_SECRET = Read-Host "  Client Secret"
+        $GAS_DEV_TOKEN = Read-Host "  Developer Token"
+        $GAS_MCC = Read-Host "  Login Customer ID (MCC, sem traços)"
+        @"
 GOOGLE_ADS_CLIENT_ID=$GAS_CLIENT_ID
 GOOGLE_ADS_CLIENT_SECRET=$GAS_CLIENT_SECRET
 GOOGLE_ADS_DEVELOPER_TOKEN=$GAS_DEV_TOKEN
 GOOGLE_ADS_LOGIN_CUSTOMER_ID=$GAS_MCC
 "@ | Set-Content "$JARVIS_DIR\.google-ads.env" -Encoding UTF8
-    Write-Ok "Credenciais salvas"
-    Write-Host ""
-    Write-Info "Agora rode este comando para autorizar:"
-    Write-Host "  $JARVIS_DIR\bin\google-ads-autorizar.cmd" -ForegroundColor DarkYellow
-} else {
-    @"
+        Write-Ok "Credenciais salvas"
+        Write-Host ""
+        Write-Info "Agora rode este comando para autorizar:"
+        Write-Host "  $JARVIS_DIR\bin\google-ads-autorizar.cmd" -ForegroundColor DarkYellow
+    } else {
+        @"
 GOOGLE_ADS_CLIENT_ID=
 GOOGLE_ADS_CLIENT_SECRET=
 GOOGLE_ADS_DEVELOPER_TOKEN=
 GOOGLE_ADS_LOGIN_CUSTOMER_ID=
 "@ | Set-Content "$JARVIS_DIR\.google-ads.env" -Encoding UTF8
-    Write-Info "Sem problema! Quando tiver, edite $JARVIS_DIR\.google-ads.env"
+        Write-Info "Sem problema! Quando tiver, edite $JARVIS_DIR\.google-ads.env"
+    }
 }
 
 # ─── 9. Configurar o Escritório para ligar com o Windows ───
@@ -272,6 +300,10 @@ $shortcut.TargetPath = "$JARVIS_DIR\escritorio\iniciar.cmd"
 $shortcut.WorkingDirectory = "$JARVIS_DIR\escritorio"
 $shortcut.WindowStyle = 7  # minimizado
 $shortcut.Save()
+
+# Atualização: encerra o painel antigo antes de iniciar o novo
+Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like "*jarvis*server.mjs*" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
+Start-Sleep -Seconds 1
 
 # Iniciar o servidor agora
 Start-Process -FilePath $NODE_BIN -ArgumentList "$JARVIS_DIR\escritorio\server.mjs" -WorkingDirectory "$JARVIS_DIR\escritorio" -WindowStyle Hidden -RedirectStandardOutput "$JARVIS_DIR\escritorio\servidor.log" -RedirectStandardError "$JARVIS_DIR\escritorio\servidor-erro.log"

@@ -29,6 +29,7 @@ banner
 # Modo sem perguntas: quando rodado pelo Claude (sem teclado), usa JARVIS_NOME e pula as perguntas opcionais
 INTERATIVO=1
 [ -t 0 ] || INTERATIVO=0
+[ "${JARVIS_ATUALIZAR:-}" = "1" ] && INTERATIVO=0
 
 # ─── 1. Verificar sistema ───
 info "Verificando o sistema..."
@@ -115,8 +116,18 @@ mkdir -p "$JARVIS_DIR"/{agentes/{jarvis,nutra,lancamentos},escritorio/public,bin
 # ─── 6. Copiar arquivos ───
 info "Copiando arquivos..."
 
+# Atualização: guarda uma cópia das instruções atuais dos agentes (o aluno pode ter personalizado)
+CARIMBO="$(date +%Y%m%d-%H%M)"
+for a in jarvis nutra lancamentos; do
+  [ -f "$JARVIS_DIR/agentes/$a/CLAUDE.md" ] && cp "$JARVIS_DIR/agentes/$a/CLAUDE.md" "$JARVIS_DIR/agentes/$a/CLAUDE.anterior-$CARIMBO.md"
+done
+
 cp "$SCRIPT_DIR/escritorio/server.mjs" "$JARVIS_DIR/escritorio/"
-cp "$SCRIPT_DIR/escritorio/equipe.json" "$JARVIS_DIR/escritorio/"
+if [ -f "$JARVIS_DIR/escritorio/equipe.json" ]; then
+  "$NODE_BIN" "$SCRIPT_DIR/bin/mesclar-equipe.mjs" "$SCRIPT_DIR/escritorio/equipe.json" "$JARVIS_DIR/escritorio/equipe.json" >/dev/null 2>&1 || cp "$SCRIPT_DIR/escritorio/equipe.json" "$JARVIS_DIR/escritorio/"
+else
+  cp "$SCRIPT_DIR/escritorio/equipe.json" "$JARVIS_DIR/escritorio/"
+fi
 cp "$SCRIPT_DIR/escritorio/public/index.html" "$JARVIS_DIR/escritorio/public/"
 cp "$SCRIPT_DIR/escritorio/public/voz.html" "$JARVIS_DIR/escritorio/public/"
 cp "$SCRIPT_DIR/escritorio/public/aprovar-ofertas.js" "$JARVIS_DIR/escritorio/public/"
@@ -129,6 +140,7 @@ cp "$SCRIPT_DIR/bin/google-ads-regras.json" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/ofertas.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/bin/ratoeira-script.mjs" "$JARVIS_DIR/bin/"
 cp "$SCRIPT_DIR/conexoes.md" "$JARVIS_DIR/"
+cp "$SCRIPT_DIR/versao.json" "$JARVIS_DIR/"
 [ -f "$JARVIS_DIR/agenda.md" ] || cp "$SCRIPT_DIR/agenda.md" "$JARVIS_DIR/"
 
 # Criar os comandos executáveis
@@ -151,6 +163,12 @@ exec "$N" "$HOME/jarvis/bin/ofertas.mjs" "$@"
 SCRIPT
 chmod +x "$JARVIS_DIR/bin/ofertas"
 
+cat > "$JARVIS_DIR/bin/atualizar" << 'SCRIPT'
+#!/bin/sh
+JARVIS_ATUALIZAR=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/hannasfranco-source/jarvis/main/instalar.sh)"
+SCRIPT
+chmod +x "$JARVIS_DIR/bin/atualizar"
+
 cat > "$JARVIS_DIR/bin/ratoeira-script" << 'SCRIPT'
 #!/bin/sh
 N="$HOME/.local/node/bin/node"; [ -x "$N" ] || N="$(command -v node)"
@@ -163,11 +181,15 @@ ok "Arquivos copiados"
 # ─── 7. Perguntar o nome ───
 echo ""
 NOME="${JARVIS_NOME:-}"
+if [ -z "$NOME" ] && [ -f "$JARVIS_DIR/config.json" ]; then
+  NOME="$(sed -n 's/.*"nome": *"\([^"]*\)".*/\1/p' "$JARVIS_DIR/config.json" | head -1)"
+fi
 if [ -z "$NOME" ] && [ "$INTERATIVO" = "1" ]; then
   read -rp "  Qual é o seu nome? " NOME
 fi
 NOME="${NOME:-Aluno}"
-# Salvar config
+# Salvar config (se já existe, mantém: voz, música e o resto)
+if [ ! -f "$JARVIS_DIR/config.json" ]; then
 cat > "$JARVIS_DIR/config.json" << EOF
 {
   "nome": "$NOME",
@@ -177,6 +199,7 @@ cat > "$JARVIS_DIR/config.json" << EOF
   "vozId": ""
 }
 EOF
+fi
 ok "Configurado para $NOME"
 
 # Atualizar o nome nos agentes
@@ -187,6 +210,9 @@ sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/conexoes.md" 2>/dev/null || true
 sed -i '' "s/{{NOME}}/$NOME/g" "$JARVIS_DIR/agenda.md" 2>/dev/null || true
 
 # ─── 8. Configurar Google Ads (opcional) ───
+if [ -f "$JARVIS_DIR/.google-ads.env" ]; then
+  ok "Google Ads: configuração mantida"
+else
 echo ""
 echo -e "  ${COR}─── Google Ads (opcional, pode fazer depois) ───${RESET}"
 echo ""
@@ -223,6 +249,7 @@ GOOGLE_ADS_LOGIN_CUSTOMER_ID=
 EOF
   chmod 600 "$JARVIS_DIR/.google-ads.env"
   info "Sem problema! Quando tiver, edite ~/jarvis/.google-ads.env"
+fi
 fi
 
 # ─── 9. Configurar o escritório para ligar sozinho ───
